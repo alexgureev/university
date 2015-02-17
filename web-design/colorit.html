@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JS Bin</title>
+</head>
+<body onload="animateEffectOnDiv('changeble');">
+<style>
+#changeble {
+    height: 100px;
+    width: 100px;
+    border: solid 1px #000000;
+    background: #000000;
+}
+</style>
+<script>
+var part_1 = 0;
+var part_2 = 0;
+var part_3 = 0;
+
+var delta = 1;
+var interval = 5;
+
+function animateEffectOnDiv(divId) {
+    divObject = document.getElementById(divId);
+
+    var newColor = pickColor();
+    divObject.style.background = newColor;
+    setTimeout("animateEffectOnDiv('" + divId + "')", interval);
+}
+
+function pickColor() {
+    changeColor();
+    return rgbToHex(part_1, part_2, part_3);
+}
+
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function changeColor() {
+    if (part_1 < 255) {
+        part_1 += delta;
+    } else if (part_2 < 255) {
+        part_2 += delta;
+    } else if (part_3 < 255) {
+        part_3 += delta;
+    }
+}
+</script>
+<div id="changeble">
+    &nbsp;
+</div>
+</body>
+</html>
