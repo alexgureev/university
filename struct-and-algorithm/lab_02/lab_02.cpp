@@ -11,6 +11,14 @@
 
 using namespace std;
 
+/*
+	Створити масив структур.
+
+	Кожна структура складається з таких елементів:
+	місто,
+	інститут,
+	факультет.
+*/
 struct Speciality
 {
 	char title[10];
@@ -37,38 +45,20 @@ struct City
 
 FILE * fp;
 
-/*
-   Створити масив структур. 
-
-   Кожна структура складається з таких елементів: 
-		місто, 
-		інститут, 
-		факультет. 
-		
-	Для інституту задається план прийому на перший курс. 
-	Для факультету задається список спеціальностей.  
-	Створений масив записати до бінарного файла. 
-
-	Передбачити можливість: 
-		доповнити файл, 
-		замінити дані в файлі, 
-		видалити дані з файлу. 
-		
-	Реалізувати запити, визначивши: 
-		1) список спеціальностей, що містять у своїй назві 
-			слова "комп'ютерний" або "автоматизований"; 
-		2) факультети й інститути, де є задана спеціальність; 
-		3) факультет, інститут і місто, де на вказану 
-		користувачем спеціальність виділено найбільше місць. 
- */
-
 void setData();
-void setCities(FILE * fp);
+void setCities(FILE * fp, int i = 0);
 void setInstitutes(City city);
 void setFaculties(Institute institute);
 void setSpecialities(Faculty faculty);
 void readData();
+void outputBullet(int i);
+int countCitiesInFile();
 
+/*
+	Для інституту задається план прийому на перший курс.
+	Для факультету задається список спеціальностей.
+	Створений масив записати до бінарного файла.
+*/
 void setData()
 {
 	if (fp != NULL) {
@@ -82,11 +72,42 @@ void setData()
 	fclose(fp);
 }
 
-void setCities(FILE * fp)
+int countCitiesInFile()
+{
+	City city;
+	int i = 1;
 
+	fp = fopen("fp.dat", "rb");
+	fread(&city, sizeof(struct City), 1, fp);
+
+	while (!(feof(fp)))
+	{
+		fread(&city, sizeof(struct City), 1, fp);
+		i++;
+	}
+
+	fclose(fp);
+	return i;
+}
+
+void appendData()
+{
+	City city;
+
+	fp = fopen("fp.dat", "a+b");
+	
+	cout << "City title: " << endl;
+	cin >> city.title;
+	
+	setInstitutes(city);
+
+	fwrite(&city, sizeof(City), 1, fp);
+	fclose(fp);
+}
+
+void setCities(FILE * fp, int i)
 {
 	City cities[10];
-	int i = 0;
 	char answer;
 
 	do
@@ -98,7 +119,7 @@ void setCities(FILE * fp)
 		cout << "One more city? y/n" << endl;
 		answer = _getch();
 		
-		fwrite(&cities[i], sizeof(struct City), 1, fp);
+		fwrite(&cities[i], sizeof(City), 1, fp);
 		
 		i++;
 	} while (answer != 'n' || i >= 10);
@@ -160,66 +181,95 @@ void setSpecialities(Faculty faculty)
 	} while (answer != 'n' || i >= 10);
 }
 
+void outputBullet(int i)
+{
+	cout << i << ". " << setw(12);
+}
+
 void readData()
 {
 	City city;
-	int i = 0;
+	int i = 1;
 	fp = fopen("fp.dat", "rb");
 	
-	/*if (!fp) {
+	if (!fp) {
 		cerr << "File doesn`t exist";
 		return;
-	}*/
+	}
 
 	fread(&city, sizeof(struct City), 1, fp);
+	
+	system("cls");
+	cout << setw(20) << "Cities list:" << endl << endl;
 
 	while (!(feof(fp))) 
 	{
 		cout.setf(ios::left);
-		cout << setw(12) <<  city.title << endl;
+		outputBullet(i);
+		cout << city.title << endl;
 
 		fread(&city, sizeof(struct City), 1, fp);
+		i++;
 	}
 
 	fclose(fp);
 	_getch();
 }
 
+/*
+	Передбачити можливість:
+		доповнити файл,
+		замінити дані в файлі,
+		видалити дані з файлу.
+
+	Реалізувати запити, визначивши:
+		1) список спеціальностей, що містять у своїй назві
+		слова "комп'ютерний" або "автоматизований";
+		2) факультети й інститути, де є задана спеціальність;
+		3) факультет, інститут і місто, де на вказану
+		користувачем спеціальність виділено найбільше місць.
+*/
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system("cls");
-	cout << " MENU" << endl;
-	cout << "1. Set data" << endl;
-	cout << "2. Read data from file" << endl;
-	cout << "3. " << endl;
-	cout << "4. " << endl;
-	cout << "5. " << endl;
-	cout << "6. " << endl;
-	cout << "7. " << endl;
-	cout << "8. " << endl;
-	cout << endl;
+	int flag = 0;
 
-	int key;
-
-	cout << "Choose menu:";
-	cin >> key;
-
-	system("cls");
-
-	switch (key)
+	while (flag == 0)
 	{
-		case 1: { setData();  break; }
-		case 2: { readData();  break; }
-		case 3: { break; }
-		case 4: { break; }
-		case 5: { break; }
-		case 6: { break; }
-		case 7: { break; }
-		case 8: { exit(0); break; }
+		system("cls");
+		cout << " MENU" << endl;
+		cout << "1. Set data" << endl;
+		cout << "2. List cities" << endl;
+		cout << "3. Append data to file" << endl;
+		cout << "4. " << endl;
+		cout << "5. " << endl;
+		cout << "6. " << endl;
+		cout << "7. " << endl;
+		cout << "8. " << endl;
+		cout << endl;
 
-		default: exit(0); break;
+		int key;
+
+		cout << "Choose menu:";
+		cin >> key;
+
+		system("cls");
+
+		switch (key)
+		{
+			case 1: { setData();  break; }
+			case 2: { readData();  break; }
+			case 3: { appendData();  break; }
+			case 4: { break; }
+			case 5: { break; }
+			case 6: { break; }
+			case 7: { break; }
+			case 8: { flag = 1; break; }
+
+			default: break;
+		}
+
 	}
-
 	return 0;
 }
 
