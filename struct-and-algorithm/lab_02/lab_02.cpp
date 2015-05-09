@@ -48,6 +48,7 @@ FILE * fp;
 	Для інституту задається план прийому на перший курс. 
 	Для факультету задається список спеціальностей.  
 	Створений масив записати до бінарного файла. 
+
 	Передбачити можливість: 
 		доповнити файл, 
 		замінити дані в файлі, 
@@ -66,6 +67,7 @@ void setCities(FILE * fp);
 void setInstitutes(City city);
 void setFaculties(Institute institute);
 void setSpecialities(Faculty faculty);
+void readData();
 
 void setData()
 {
@@ -81,6 +83,7 @@ void setData()
 }
 
 void setCities(FILE * fp)
+
 {
 	City cities[10];
 	int i = 0;
@@ -95,7 +98,7 @@ void setCities(FILE * fp)
 		cout << "One more city? y/n" << endl;
 		answer = _getch();
 		
-		fwrite(&cities[i], sizeof(City), 1, fp);
+		fwrite(&cities[i], sizeof(struct City), 1, fp);
 		
 		i++;
 	} while (answer != 'n' || i >= 10);
@@ -157,11 +160,36 @@ void setSpecialities(Faculty faculty)
 	} while (answer != 'n' || i >= 10);
 }
 
+void readData()
+{
+	City city;
+	int i = 0;
+	fp = fopen("fp.dat", "rb");
+	
+	/*if (!fp) {
+		cerr << "File doesn`t exist";
+		return;
+	}*/
+
+	fread(&city, sizeof(struct City), 1, fp);
+
+	while (!(feof(fp))) 
+	{
+		cout.setf(ios::left);
+		cout << setw(12) <<  city.title << endl;
+
+		fread(&city, sizeof(struct City), 1, fp);
+	}
+
+	fclose(fp);
+	_getch();
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	system("cls");
 	cout << " MENU" << endl;
-	cout << "1. set" << endl;
+	cout << "1. Set data" << endl;
 	cout << "2. Read data from file" << endl;
 	cout << "3. " << endl;
 	cout << "4. " << endl;
@@ -181,7 +209,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	switch (key)
 	{
 		case 1: { setData();  break; }
-		case 2: { break; }
+		case 2: { readData();  break; }
 		case 3: { break; }
 		case 4: { break; }
 		case 5: { break; }
