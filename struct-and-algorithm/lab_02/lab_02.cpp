@@ -47,12 +47,14 @@ FILE * fp;
 
 void setData();
 void setCities(FILE * fp, int i = 0);
-void setInstitutes(City city);
-void setFaculties(Institute institute);
-void setSpecialities(Faculty faculty);
+void setInstitutes(City *city);
+void setFaculties(Institute *institute);
+void setSpecialities(Faculty *faculty);
 void readData();
 void outputBullet(int i);
 int countCitiesInFile();
+void searchSubquery();
+void searchAndOutputSpecialityInCity(City city);
 
 /*
 	Для інституту задається план прийому на перший курс.
@@ -99,7 +101,7 @@ void appendData()
 	cout << "City title: " << endl;
 	cin >> city.title;
 	
-	setInstitutes(city);
+	setInstitutes(&city);
 
 	fwrite(&city, sizeof(City), 1, fp);
 	fclose(fp);
@@ -114,7 +116,7 @@ void setCities(FILE * fp, int i)
 	{
 		cout << "City title: " << endl;
 		cin >> cities[i].title;
-		setInstitutes(cities[i]);
+		setInstitutes(&cities[i]);
 
 		cout << "One more city? y/n" << endl;
 		answer = _getch();
@@ -125,7 +127,7 @@ void setCities(FILE * fp, int i)
 	} while (answer != 'n' || i >= 10);
 }
 
-void setInstitutes(City city)
+void setInstitutes(City *city)
 {
 	char answer;
 	int i = 0;
@@ -133,8 +135,8 @@ void setInstitutes(City city)
 	do
 	{
 		cout << "Insitute title: " << endl;
-		cin >> city.institutes[i].title;
-		setFaculties(city.institutes[i]);
+		cin >> (*city).institutes[i].title;
+		setFaculties(&(*city).institutes[i]);
 
 		cout << "One more institute? y/n" << endl;
 		answer = _getch();
@@ -143,7 +145,7 @@ void setInstitutes(City city)
 	} while (answer != 'n' || i >= 10);
 }
 
-void setFaculties(Institute institute)
+void setFaculties(Institute *institute)
 {
 	char answer;
 	int i = 0;
@@ -151,8 +153,8 @@ void setFaculties(Institute institute)
 	do
 	{
 		cout << "Faculty title: " << endl;
-		cin >> institute.faculties[i].title;
-		setSpecialities(institute.faculties[i]);
+		cin >> (*institute).faculties[i].title;
+		setSpecialities(&(*institute).faculties[i]);
 
 		cout << "One more faculty? y/n" << endl;
 		answer = _getch();
@@ -161,7 +163,7 @@ void setFaculties(Institute institute)
 	} while (answer != 'n' || i >= 10);
 }
 
-void setSpecialities(Faculty faculty)
+void setSpecialities(Faculty *faculty)
 {
 	char answer;
 	int i = 0;
@@ -169,10 +171,10 @@ void setSpecialities(Faculty faculty)
 	do
 	{
 		cout << "Speciality title: " << endl;
-		cin >> faculty.specialities[i].title;
+		cin >> (*faculty).specialities[i].title;
 
 		cout << "Places: " << endl;
-		cin >> faculty.specialities[i].places;
+		cin >> (*faculty).specialities[i].places;
 
 		cout << "One more speciality? y/n" << endl;
 		answer = _getch();
@@ -217,6 +219,37 @@ void readData()
 }
 
 /*
+	1) список спеціальностей, що містять у своїй назві
+	слова "комп'ютерний" або "автоматизований";
+*/
+void searchSubquery()
+{
+	City city;
+	fp = fopen("fp.dat", "rb");
+
+	if (!fp) {
+		cerr << "File doesn`t exist";
+		return;
+	}
+
+	fread(&city, sizeof(struct City), 1, fp);
+
+	while (!(feof(fp)))
+	{
+		searchAndOutputSpecialityInCity(city);
+		fread(&city, sizeof(struct City), 1, fp);
+	}
+
+	fclose(fp);
+	_getch();
+}
+
+void searchAndOutputSpecialityInCity(City city)
+{
+	cout << city.institutes[0].title << endl; // institutes[0].faculties[0].specialities[0].title << endl;
+}
+
+/*
 	Передбачити можливість:
 		доповнити файл,
 		замінити дані в файлі,
@@ -241,11 +274,11 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "1. Set data" << endl;
 		cout << "2. List cities" << endl;
 		cout << "3. Append data to file" << endl;
-		cout << "4. " << endl;
+		cout << "4. Search specialities with subquery" << endl;
 		cout << "5. " << endl;
 		cout << "6. " << endl;
 		cout << "7. " << endl;
-		cout << "8. " << endl;
+		cout << "8. Exit" << endl;
 		cout << endl;
 
 		int key;
@@ -260,7 +293,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 1: { setData();  break; }
 			case 2: { readData();  break; }
 			case 3: { appendData();  break; }
-			case 4: { break; }
+			case 4: { searchSubquery();  break; }
 			case 5: { break; }
 			case 6: { break; }
 			case 7: { break; }
