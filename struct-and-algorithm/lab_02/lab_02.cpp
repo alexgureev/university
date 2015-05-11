@@ -2,59 +2,8 @@
 //
 
 #include "stdafx.h"
-#include <iostream>
-#include <conio.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-#include <iomanip>
-
-using namespace std;
-
-/*
-	Створити масив структур.
-
-	Кожна структура складається з таких елементів:
-	місто,
-	інститут,
-	факультет.
-*/
-struct Speciality
-{
-	char title[10];
-	int places;
-};
-
-struct Faculty
-{
-	char title[10];
-	Speciality specialities[10];
-};
-
-struct Institute
-{
-	char title[10];
-	Faculty faculties[10];
-};
-
-struct City
-{
-	char title[10];
-	Institute institutes[10];
-};
 
 FILE * fp;
-
-void setData();
-void setCities(FILE * fp, int i = 0);
-void setInstitutes(City *city);
-void setFaculties(Institute *institute);
-void setSpecialities(Faculty *faculty);
-void readData();
-void outputBullet(int i);
-int countCitiesInFile();
-void searchSubquery();
-void searchAndOutputSpecialityInCity(City city);
 
 /*
 	Для інституту задається план прийому на перший курс.
@@ -246,7 +195,35 @@ void searchSubquery()
 
 void searchAndOutputSpecialityInCity(City city)
 {
-	cout << city.institutes[0].title << endl; // institutes[0].faculties[0].specialities[0].title << endl;
+	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
+	{
+		//if (city.institutes[9]) { return; }
+		cout << city.institutes[9].title;
+		_getch();
+
+		Institute institute = city.institutes[instituteCount];
+		
+		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
+		{
+			Faculty faculty = institute.faculties[facultyCount];
+
+
+			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
+			{
+				Speciality speciality = faculty.specialities[specialityCount];
+				const char * result;
+
+				result = strstr(speciality.title, "speci");
+
+				cout << result << endl;
+
+			}
+		}
+
+
+	}
+
+	//cout << city.institutes[0].title << endl; // institutes[0].faculties[0].specialities[0].title << endl;
 }
 
 /*
