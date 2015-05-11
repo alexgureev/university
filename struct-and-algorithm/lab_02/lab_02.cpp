@@ -139,7 +139,7 @@ void outputBullet(int i)
 
 void readData()
 {
-	City city;
+	City * city = new City;
 	int i = 1;
 	fp = fopen("fp.dat", "rb");
 	
@@ -148,7 +148,7 @@ void readData()
 		return;
 	}
 
-	fread(&city, sizeof(struct City), 1, fp);
+	fread(city, sizeof(struct City), 1, fp);
 	
 	system("cls");
 	cout << setw(20) << "Cities list:" << endl << endl;
@@ -157,9 +157,9 @@ void readData()
 	{
 		cout.setf(ios::left);
 		outputBullet(i);
-		cout << city.title << endl;
+		cout << (*city).title << endl;
 
-		fread(&city, sizeof(struct City), 1, fp);
+		fread(city, sizeof(struct City), 1, fp);
 		i++;
 	}
 
@@ -173,7 +173,7 @@ void readData()
 */
 void searchSubquery()
 {
-	City city;
+	City * city = new City;
 	fp = fopen("fp.dat", "rb");
 
 	if (!fp) {
@@ -181,46 +181,42 @@ void searchSubquery()
 		return;
 	}
 
-	fread(&city, sizeof(struct City), 1, fp);
-
+	fread(city, sizeof(struct City), 1, fp);
+		
 	while (!(feof(fp)))
 	{
 		searchAndOutputSpecialityInCity(city);
-		fread(&city, sizeof(struct City), 1, fp);
+		fread(city, sizeof(struct City), 1, fp);
 	}
-
+	
 	fclose(fp);
 	_getch();
 }
 
-void searchAndOutputSpecialityInCity(City city)
+void searchAndOutputSpecialityInCity(City * city)
 {
 	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
 	{
-		//if (city.institutes[9]) { return; }
-		cout << city.institutes[9].title;
-		_getch();
+		Institute institute = (*city).institutes[instituteCount];
 
-		Institute institute = city.institutes[instituteCount];
+		if (institute.title.empty()) { return; }
 		
 		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
 		{
 			Faculty faculty = institute.faculties[facultyCount];
 
+			if (faculty.title.empty()) { return; }
 
 			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
 			{
 				Speciality speciality = faculty.specialities[specialityCount];
-				const char * result;
 
-				result = strstr(speciality.title, "speci");
+				if (speciality.title.empty()) { return; }
 
-				cout << result << endl;
+				cout << speciality.title << endl;
 
 			}
 		}
-
-
 	}
 
 	//cout << city.institutes[0].title << endl; // institutes[0].faculties[0].specialities[0].title << endl;
@@ -280,6 +276,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 
 	}
+
 	return 0;
 }
 

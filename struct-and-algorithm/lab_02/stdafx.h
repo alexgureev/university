@@ -28,25 +28,25 @@ using namespace std;
 */
 struct Speciality
 {
-	char title[10];
+	string title;
 	int places;
 };
 
 struct Faculty
 {
-	char title[10];
+	string title;
 	Speciality specialities[10];
 };
 
 struct Institute
 {
-	char title[10];
+	string title;
 	Faculty faculties[10];
 };
 
 struct City
 {
-	char title[10];
+	string title;
 	Institute institutes[10];
 };
 
@@ -59,6 +59,6 @@ void readData();
 void outputBullet(int i);
 int countCitiesInFile();
 void searchSubquery();
-void searchAndOutputSpecialityInCity(City city);
+void searchAndOutputSpecialityInCity(City * city);
 
 // TODO: reference additional headers your program requires here
