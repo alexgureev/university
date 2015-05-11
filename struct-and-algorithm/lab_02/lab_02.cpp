@@ -4,6 +4,7 @@
 #include "stdafx.h"
 
 FILE * fp;
+string result[10];
 
 /*
 	Для інституту задається план прийому на перший курс.
@@ -174,6 +175,7 @@ void readData()
 void searchSubquery()
 {
 	City * city = new City;
+
 	fp = fopen("fp.dat", "rb");
 
 	if (!fp) {
@@ -182,44 +184,134 @@ void searchSubquery()
 	}
 
 	fread(city, sizeof(struct City), 1, fp);
-		
+	string query = inputSearchQuery();
+
 	while (!(feof(fp)))
 	{
-		searchAndOutputSpecialityInCity(city);
+		searchAndOutputSpecialityInCity(city, query);
 		fread(city, sizeof(struct City), 1, fp);
 	}
-	
+
 	fclose(fp);
 	_getch();
 }
 
-void searchAndOutputSpecialityInCity(City * city)
+string inputSearchQuery()
 {
+	string query;
+
+	cout << "Please input search query: ";
+	cin >> query;
+
+	system("cls");
+
+	return query;
+}
+
+/*
+	1) список спеціальностей, що містять у своїй назві
+		слова "комп'ютерний" або "автоматизований";
+*/
+void searchAndOutputSpecialityInCity(City * city, string query)
+{
+	int counter = 0;
+
 	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
 	{
 		Institute institute = (*city).institutes[instituteCount];
 
-		if (institute.title.empty()) { return; }
+		if (institute.title.empty()) { break; }
 		
 		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
 		{
 			Faculty faculty = institute.faculties[facultyCount];
 
-			if (faculty.title.empty()) { return; }
+			if (faculty.title.empty()) { break; }
 
 			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
 			{
 				Speciality speciality = faculty.specialities[specialityCount];
 
-				if (speciality.title.empty()) { return; }
+				if (speciality.title.empty()) { break; }
 
-				cout << speciality.title << endl;
+				if (speciality.title.find(query) != std::string::npos) {
+					cout << speciality.title << endl;
+				}
 
 			}
 		}
 	}
+}
 
-	//cout << city.institutes[0].title << endl; // institutes[0].faculties[0].specialities[0].title << endl;
+
+void searchInstitutes()
+{
+	City * city = new City;
+
+	fp = fopen("fp.dat", "rb");
+
+	if (!fp) {
+		cerr << "File doesn`t exist";
+		return;
+	}
+
+	fread(city, sizeof(struct City), 1, fp);
+	string query = inputSearchQuery();
+
+	while (!(feof(fp)))
+	{
+		searchAndOutputInstitutes(city, query);
+		fread(city, sizeof(struct City), 1, fp);
+	}
+
+	fclose(fp);
+	_getch();
+}
+
+
+/*
+	2) факультети й інститути, де є задана спеціальність;
+*/
+void searchAndOutputInstitutes(City * city, string query)
+{
+	string instituteResult, facultyResult;
+	int counter = 0;
+
+	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
+	{
+		Institute institute = (*city).institutes[instituteCount];
+
+		if (institute.title.empty()) { break; }
+		instituteResult = institute.title;
+
+		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
+		{
+			Faculty faculty = institute.faculties[facultyCount];
+
+			if (faculty.title.empty()) { break; }
+			facultyResult = faculty.title;
+
+			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
+			{
+				Speciality speciality = faculty.specialities[specialityCount];
+
+				if (speciality.title.empty()) { break; }
+
+				if (speciality.title.find(query) != std::string::npos) {
+					cout	<< instituteResult 
+							<< " > " 
+							<< facultyResult 
+							<< " > " 
+							<< speciality.title
+							<< "("
+							<< speciality.places
+							<< ")"
+							<< endl;
+				}
+
+			}
+		}
+	}
 }
 
 /*
@@ -229,9 +321,7 @@ void searchAndOutputSpecialityInCity(City * city)
 		видалити дані з файлу.
 
 	Реалізувати запити, визначивши:
-		1) список спеціальностей, що містять у своїй назві
-		слова "комп'ютерний" або "автоматизований";
-		2) факультети й інститути, де є задана спеціальність;
+		
 		3) факультет, інститут і місто, де на вказану
 		користувачем спеціальність виділено найбільше місць.
 */
@@ -248,7 +338,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "2. List cities" << endl;
 		cout << "3. Append data to file" << endl;
 		cout << "4. Search specialities with subquery" << endl;
-		cout << "5. " << endl;
+		cout << "5. Search institutes and facultes" << endl;
 		cout << "6. " << endl;
 		cout << "7. " << endl;
 		cout << "8. Exit" << endl;
@@ -267,7 +357,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 2: { readData();  break; }
 			case 3: { appendData();  break; }
 			case 4: { searchSubquery();  break; }
-			case 5: { break; }
+			case 5: { searchInstitutes();  break; }
 			case 6: { break; }
 			case 7: { break; }
 			case 8: { flag = 1; break; }

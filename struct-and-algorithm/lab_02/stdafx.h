@@ -59,6 +59,9 @@ void readData();
 void outputBullet(int i);
 int countCitiesInFile();
 void searchSubquery();
-void searchAndOutputSpecialityInCity(City * city);
+void searchAndOutputSpecialityInCity(City * city, string query);
+string inputSearchQuery();
+void searchInstitutes();
+void searchAndOutputInstitutes(City * city, string query);
 
 // TODO: reference additional headers your program requires here
