@@ -1,10 +1,6 @@
-// lab_02.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 
 FILE * fp;
-string result[10];
 
 /*
 	Для інституту задається план прийому на перший курс.
@@ -172,7 +168,7 @@ void readData()
 	1) список спеціальностей, що містять у своїй назві
 	слова "комп'ютерний" або "автоматизований";
 */
-void searchSubquery()
+void searchSubquery(int type)
 {
 	City * city = new City;
 
@@ -188,7 +184,7 @@ void searchSubquery()
 
 	while (!(feof(fp)))
 	{
-		searchAndOutputSpecialityInCity(city, query);
+		searchAndOutputSpecialityInCity(city, query, type);
 		fread(city, sizeof(struct City), 1, fp);
 	}
 
@@ -209,70 +205,14 @@ string inputSearchQuery()
 }
 
 /*
-	1) список спеціальностей, що містять у своїй назві
-		слова "комп'ютерний" або "автоматизований";
+	Реалізувати запити, визначивши:
+		1) список спеціальностей, що містять у своїй назві
+			слова "комп'ютерний" або "автоматизований";
+		2) факультети й інститути, де є задана спеціальність;
+		3) факультет, інститут і місто, де на вказану
+		користувачем спеціальність виділено найбільше місць.
 */
-void searchAndOutputSpecialityInCity(City * city, string query)
-{
-	int counter = 0;
-
-	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
-	{
-		Institute institute = (*city).institutes[instituteCount];
-
-		if (institute.title.empty()) { break; }
-		
-		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
-		{
-			Faculty faculty = institute.faculties[facultyCount];
-
-			if (faculty.title.empty()) { break; }
-
-			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
-			{
-				Speciality speciality = faculty.specialities[specialityCount];
-
-				if (speciality.title.empty()) { break; }
-
-				if (speciality.title.find(query) != std::string::npos) {
-					cout << speciality.title << endl;
-				}
-
-			}
-		}
-	}
-}
-
-
-void searchInstitutes()
-{
-	City * city = new City;
-
-	fp = fopen("fp.dat", "rb");
-
-	if (!fp) {
-		cerr << "File doesn`t exist";
-		return;
-	}
-
-	fread(city, sizeof(struct City), 1, fp);
-	string query = inputSearchQuery();
-
-	while (!(feof(fp)))
-	{
-		searchAndOutputInstitutes(city, query);
-		fread(city, sizeof(struct City), 1, fp);
-	}
-
-	fclose(fp);
-	_getch();
-}
-
-
-/*
-	2) факультети й інститути, де є задана спеціальність;
-*/
-void searchAndOutputInstitutes(City * city, string query)
+void searchAndOutputSpecialityInCity(City * city, string query, int type)
 {
 	string instituteResult, facultyResult;
 	int counter = 0;
@@ -297,21 +237,51 @@ void searchAndOutputInstitutes(City * city, string query)
 
 				if (speciality.title.empty()) { break; }
 
-				if (speciality.title.find(query) != std::string::npos) {
-					cout	<< instituteResult 
-							<< " > " 
-							<< facultyResult 
-							<< " > " 
-							<< speciality.title
-							<< "("
-							<< speciality.places
-							<< ")"
-							<< endl;
+				if (speciality.title.find(query) != std::string::npos) 
+				{
+					switch (type)
+					{
+						case 1: outputFirstTask(speciality); break;
+						case 2: outputSecondTask(instituteResult, facultyResult, speciality); break;
+						case 3: outputThirdTask(instituteResult, facultyResult, speciality); break;
+					}
 				}
-
 			}
 		}
 	}
+}
+
+void outputFirstTask(Speciality speciality)
+{
+	cout 
+	<< speciality.title
+	<< endl;
+}
+
+void outputSecondTask(string instituteResult, string facultyResult, Speciality speciality)
+{
+	cout << instituteResult
+		<< " > "
+		<< facultyResult
+		<< " > "
+		<< speciality.title
+		<< "("
+		<< speciality.places
+		<< ")"
+		<< endl;
+}
+
+void outputThirdTask(string instituteResult, string facultyResult, Speciality speciality)
+{
+	cout << instituteResult
+		<< " > "
+		<< facultyResult
+		<< " > "
+		<< speciality.title
+		<< "("
+		<< speciality.places
+		<< ")"
+		<< endl;
 }
 
 /*
@@ -320,10 +290,7 @@ void searchAndOutputInstitutes(City * city, string query)
 		замінити дані в файлі,
 		видалити дані з файлу.
 
-	Реалізувати запити, визначивши:
-		
-		3) факультет, інститут і місто, де на вказану
-		користувачем спеціальність виділено найбільше місць.
+
 */
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -356,9 +323,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 1: { setData();  break; }
 			case 2: { readData();  break; }
 			case 3: { appendData();  break; }
-			case 4: { searchSubquery();  break; }
-			case 5: { searchInstitutes();  break; }
-			case 6: { break; }
+			case 4: { searchSubquery(1);  break; }
+			case 5: { searchSubquery(2);  break; }
+			case 6: { searchSubquery(3); break; }
 			case 7: { break; }
 			case 8: { flag = 1; break; }
 

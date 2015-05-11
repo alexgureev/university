@@ -1,8 +1,3 @@
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -58,10 +53,10 @@ void setSpecialities(Faculty *faculty);
 void readData();
 void outputBullet(int i);
 int countCitiesInFile();
-void searchSubquery();
-void searchAndOutputSpecialityInCity(City * city, string query);
+void searchSubquery(int type);
+void searchAndOutputSpecialityInCity(City * city, string query, int type);
 string inputSearchQuery();
-void searchInstitutes();
-void searchAndOutputInstitutes(City * city, string query);
 
-// TODO: reference additional headers your program requires here
+void outputFirstTask(Speciality speciality);
+void outputSecondTask(string instituteResult, string facultyResult, Speciality speciality);
+void outputThirdTask(string instituteResult, string facultyResult, Speciality speciality);
