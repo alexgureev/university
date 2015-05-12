@@ -243,12 +243,89 @@ void searchAndOutputSpecialityInCity(City * city, string query, int type)
 					{
 						case 1: outputFirstTask(speciality); break;
 						case 2: outputSecondTask(instituteResult, facultyResult, speciality); break;
-						case 3: outputThirdTask(instituteResult, facultyResult, speciality); break;
 					}
 				}
 			}
 		}
 	}
+}
+
+/*
+	3) факультет, інститут і місто, де на вказану
+	користувачем спеціальність виділено найбільше місць.
+*/
+void searchMaxPlaces()
+{
+	City * city = new City;
+	SearchResult maxResult, tmpResult;
+	
+	fp = fopen("fp.dat", "rb");
+
+	if (!fp) {
+		cerr << "File doesn`t exist";
+		return;
+	}
+
+	fread(city, sizeof(struct City), 1, fp);
+	string query = inputSearchQuery();
+
+	while (!(feof(fp)))
+	{
+		tmpResult = searchAndReturnSpecialityInCity(city, query);
+
+		if (tmpResult.places > maxResult.places) {
+			maxResult = tmpResult;
+		}
+
+		fread(city, sizeof(struct City), 1, fp);
+	}
+
+	outputThirdTask(maxResult);
+	fclose(fp);
+	_getch();
+}
+
+SearchResult searchAndReturnSpecialityInCity(City *city, string query)
+{
+	SearchResult result;
+	string instituteResult, facultyResult;
+	int counter = 0;
+
+	for (int instituteCount = 0; instituteCount <= 9; instituteCount++)
+	{
+		Institute institute = (*city).institutes[instituteCount];
+
+		if (institute.title.empty()) { break; }
+		instituteResult = institute.title;
+
+		for (int facultyCount = 0; facultyCount <= 9; facultyCount++)
+		{
+			Faculty faculty = institute.faculties[facultyCount];
+
+			if (faculty.title.empty()) { break; }
+			facultyResult = faculty.title;
+
+			for (int specialityCount = 0; specialityCount <= 9; specialityCount++)
+			{
+				Speciality speciality = faculty.specialities[specialityCount];
+
+				if (speciality.title.empty()) { break; }
+
+				if (speciality.title.find(query) == std::string::npos ||
+					speciality.places <= result.places)
+				{
+					continue;
+				}
+				
+				result.city = (*city);
+				result.institute = institute;
+				result.faculty = faculty;
+				result.places = speciality.places;
+			}
+		}
+	}
+
+	return result;
 }
 
 void outputFirstTask(Speciality speciality)
@@ -271,15 +348,19 @@ void outputSecondTask(string instituteResult, string facultyResult, Speciality s
 		<< endl;
 }
 
-void outputThirdTask(string instituteResult, string facultyResult, Speciality speciality)
+/*
+	3) факультет, інститут і місто, де на вказану
+	користувачем спеціальність виділено найбільше місць.
+*/
+void outputThirdTask(SearchResult result)
 {
-	cout << instituteResult
+	cout << result.city.title
 		<< " > "
-		<< facultyResult
+		<< result.institute.title
 		<< " > "
-		<< speciality.title
+		<< result.faculty.title
 		<< "("
-		<< speciality.places
+		<< result.places
 		<< ")"
 		<< endl;
 }
@@ -306,7 +387,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "3. Append data to file" << endl;
 		cout << "4. Search specialities with subquery" << endl;
 		cout << "5. Search institutes and facultes" << endl;
-		cout << "6. " << endl;
+		cout << "6. Search max places" << endl;
 		cout << "7. " << endl;
 		cout << "8. Exit" << endl;
 		cout << endl;
@@ -325,7 +406,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 3: { appendData();  break; }
 			case 4: { searchSubquery(1);  break; }
 			case 5: { searchSubquery(2);  break; }
-			case 6: { searchSubquery(3); break; }
+			case 6: { searchMaxPlaces(); break; }
 			case 7: { break; }
 			case 8: { flag = 1; break; }
 

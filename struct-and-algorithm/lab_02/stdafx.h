@@ -45,6 +45,14 @@ struct City
 	Institute institutes[10];
 };
 
+struct SearchResult
+{
+	City city;
+	Institute institute;
+	Faculty faculty;
+	int places;
+};
+
 void setData();
 void setCities(FILE * fp, int i = 0);
 void setInstitutes(City *city);
@@ -59,4 +67,7 @@ string inputSearchQuery();
 
 void outputFirstTask(Speciality speciality);
 void outputSecondTask(string instituteResult, string facultyResult, Speciality speciality);
-void outputThirdTask(string instituteResult, string facultyResult, Speciality speciality);
+SearchResult searchAndReturnSpecialityInCity(City * city, string query);
+void searchMaxPlaces();
+void outputThirdTask(SearchResult result);
+
