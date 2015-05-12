@@ -41,6 +41,7 @@ struct Institute
 
 struct City
 {
+	int id;
 	string title;
 	Institute institutes[10];
 };
@@ -70,4 +71,5 @@ void outputSecondTask(string instituteResult, string facultyResult, Speciality s
 SearchResult searchAndReturnSpecialityInCity(City * city, string query);
 void searchMaxPlaces();
 void outputThirdTask(SearchResult result);
+void _remove();
 

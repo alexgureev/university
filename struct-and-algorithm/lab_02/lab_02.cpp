@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 FILE * fp;
+struct City citiesList[10];
 
 /*
 	Для інституту задається план прийому на перший курс.
@@ -44,6 +45,9 @@ void appendData()
 
 	fp = fopen("fp.dat", "a+b");
 	
+	cout << "City ID: " << endl;
+	cin >> city.id;
+
 	cout << "City title: " << endl;
 	cin >> city.title;
 	
@@ -60,8 +64,12 @@ void setCities(FILE * fp, int i)
 
 	do
 	{
+		cout << "City ID: " << endl;
+		cin >> cities[i].id;
+		
 		cout << "City title: " << endl;
 		cin >> cities[i].title;
+
 		setInstitutes(&cities[i]);
 
 		cout << "One more city? y/n" << endl;
@@ -153,7 +161,7 @@ void readData()
 	while (!(feof(fp))) 
 	{
 		cout.setf(ios::left);
-		outputBullet(i);
+		outputBullet((*city).id);
 		cout << (*city).title << endl;
 
 		fread(city, sizeof(struct City), 1, fp);
@@ -370,9 +378,57 @@ void outputThirdTask(SearchResult result)
 		доповнити файл,
 		замінити дані в файлі,
 		видалити дані з файлу.
-
-
 */
+
+void _remove()
+{
+	int cityId = 0, k;
+	int status = 1, i = -1, j = 0;
+	
+	FILE *p;
+
+	p = fopen("fp.dat", "rb");
+	if (!p)
+	{
+		system("cls");
+		cout << "Register file could not be opened!" << endl;
+		return;
+	}
+
+	while (!feof(p))
+	{
+		fread(&citiesList[i], sizeof(struct City), 1, p);
+		i++;
+	}
+
+	cout << "Enter City NO. to delete from the list: " << endl;
+	cin >> cityId;
+
+	for (j = 0; j < i; j++)
+	{
+		if (cityId == citiesList[j].id)
+		{
+			for (k = j + 1; k < i; k++)
+			{
+				memcpy(&citiesList[k - 1], &citiesList[k], sizeof (City));
+			}
+		}
+	}
+
+	fclose(p);
+
+	FILE *fp;
+	fp = fopen("fp.dat", "wb");
+
+	for (int l = 0; l < i - 2; l++)
+	{
+		fwrite(&citiesList[l], sizeof(struct City), 1, fp);
+	}
+
+	fclose(fp);
+	system("cls");
+	cout << "City with NO. " << cityId << " has been removed" << endl;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -388,7 +444,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "4. Search specialities with subquery" << endl;
 		cout << "5. Search institutes and facultes" << endl;
 		cout << "6. Search max places" << endl;
-		cout << "7. " << endl;
+		cout << "7. Remove data from list by id" << endl;
 		cout << "8. Exit" << endl;
 		cout << endl;
 
@@ -407,7 +463,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 4: { searchSubquery(1);  break; }
 			case 5: { searchSubquery(2);  break; }
 			case 6: { searchMaxPlaces(); break; }
-			case 7: { break; }
+			case 7: { _remove();  break; }
 			case 8: { flag = 1; break; }
 
 			default: break;
