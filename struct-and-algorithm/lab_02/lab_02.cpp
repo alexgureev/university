@@ -39,6 +39,7 @@ int countCitiesInFile()
 	return i;
 }
 
+
 void appendData()
 {
 	City city;
@@ -81,15 +82,65 @@ void setCities(FILE * fp, int i)
 	} while (answer != 'n' || i >= 10);
 }
 
+void editData()
+{
+	int i = 0, index;
+	fp = fopen("fp.dat", "rb");
+
+	if (!fp) {
+		cerr << "File doesn`t exist";
+		return;
+	}
+
+	fread(&citiesList[i], sizeof(struct City), 1, fp);
+
+	system("cls");
+	cout << setw(20) << "Cities list:" << endl << endl;
+
+	while (!(feof(fp)))
+	{
+		cout.setf(ios::left);
+
+		cout 
+			<< i 
+			<< ". " 
+			<< setw(12)
+			<< citiesList[i].title
+			/*<< " ("
+			<< (*cities).id
+			<< ") "*/
+			<< endl;
+		i++;
+		fread(&citiesList[i], sizeof(struct City), 1, fp);
+	}
+
+	cout << setw(20) << "Please, enter city index to start edit:" << endl;
+	cin >> index;
+
+	setInstitutes(&citiesList[index]);
+
+	fclose(fp);
+
+}
+
 void setInstitutes(City *city)
 {
 	char answer;
+	string title;
 	int i = 0;
 
 	do
 	{
-		cout << "Insitute title: " << endl;
+		cout << "Institute title";
+		
+		if ((*city).institutes[i].title.empty() == false) 
+		{
+			cout << " (" << (*city).institutes[i].title  << ")";
+		}
+
+		cout << ": " << endl;
 		cin >> (*city).institutes[i].title;
+
 		setFaculties(&(*city).institutes[i]);
 
 		cout << "One more institute? y/n" << endl;
@@ -102,11 +153,19 @@ void setInstitutes(City *city)
 void setFaculties(Institute *institute)
 {
 	char answer;
+	string title;
 	int i = 0;
 
 	do
 	{
-		cout << "Faculty title: " << endl;
+		cout << "Faculty title";
+
+		if ((*institute).faculties[i].title.empty() == false)
+		{
+			cout << " (" << (*institute).faculties[i].title << ")";
+		}
+
+		cout << ": " << endl;
 		cin >> (*institute).faculties[i].title;
 		setSpecialities(&(*institute).faculties[i]);
 
@@ -120,14 +179,30 @@ void setFaculties(Institute *institute)
 void setSpecialities(Faculty *faculty)
 {
 	char answer;
-	int i = 0;
+	string title;
+	int i = 0, places;
 
 	do
 	{
-		cout << "Speciality title: " << endl;
+		cout << "Speciality title";
+
+		if ((*faculty).specialities[i].title.empty() == false)
+		{
+			cout << " (" << (*faculty).specialities[i].title << ")";
+		}
+
+		cout << ": " << endl;
 		cin >> (*faculty).specialities[i].title;
 
-		cout << "Places: " << endl;
+		cout << "Places";
+
+		if ((*faculty).specialities[i].places >= 0)
+		{
+			cout << " (" << (*faculty).specialities[i].places << ")";
+		}
+
+		cout << ": " << endl;
+
 		cin >> (*faculty).specialities[i].places;
 
 		cout << "One more speciality? y/n" << endl;
@@ -441,11 +516,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "1. Set data" << endl;
 		cout << "2. List cities" << endl;
 		cout << "3. Append data to file" << endl;
-		cout << "4. Search specialities with subquery" << endl;
-		cout << "5. Search institutes and facultes" << endl;
-		cout << "6. Search max places" << endl;
-		cout << "7. Remove data from list by id" << endl;
-		cout << "8. Exit" << endl;
+		cout << "4. Edit data" << endl;
+		cout << "5. Search specialities with subquery" << endl;
+		cout << "6. Search institutes and facultes" << endl;
+		cout << "7. Search max places" << endl;
+		cout << "8. Remove data from list by id" << endl;
+		cout << "9. Exit" << endl;
 		cout << endl;
 
 		int key;
@@ -460,11 +536,12 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 1: { setData();  break; }
 			case 2: { readData();  break; }
 			case 3: { appendData();  break; }
-			case 4: { searchSubquery(1);  break; }
-			case 5: { searchSubquery(2);  break; }
-			case 6: { searchMaxPlaces(); break; }
-			case 7: { _remove();  break; }
-			case 8: { flag = 1; break; }
+			case 4: { editData();  break; }
+			case 5: { searchSubquery(1);  break; }
+			case 6: { searchSubquery(2);  break; }
+			case 7: { searchMaxPlaces(); break; }
+			case 8: { _remove();  break; }
+			case 9: { flag = 1; break; }
 
 			default: break;
 		}

@@ -72,4 +72,5 @@ SearchResult searchAndReturnSpecialityInCity(City * city, string query);
 void searchMaxPlaces();
 void outputThirdTask(SearchResult result);
 void _remove();
+void editData();
 
