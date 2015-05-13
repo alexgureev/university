@@ -117,10 +117,33 @@ void editData()
 	cout << setw(20) << "Please, enter city index to start edit:" << endl;
 	cin >> index;
 
+	cout << "City ID: " << endl;
+	cin >> citiesList[index].id;
+
+	cout << "City title: " << endl;
+	cin >> citiesList[index].title;
+
 	setInstitutes(&citiesList[index]);
 
 	fclose(fp);
 
+	fp = fopen("fp.dat", "wb");
+
+	if (!fp) 
+	{
+		cerr << "File doesn`t exist";
+		return;
+	}
+
+	index = 0;
+
+	do
+	{
+		fwrite(&citiesList[index], sizeof(City), 1, fp);
+		index++;
+	} while (index < i);
+
+	fclose(fp);
 }
 
 void setInstitutes(City *city)
