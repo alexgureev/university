@@ -1,15 +1,18 @@
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #pragma once
 
 #include "targetver.h"
 
 #include <stdio.h>
 #include <tchar.h>
+#include <iostream>
+#include <conio.h>
+#include <stdlib.h>
+#include <string>
+#include <iomanip>
+
+using namespace std;
 
 
-
-// TODO: reference additional headers your program requires here
+void createStacks();
+void push(int * value);
+void pop(int * value);
