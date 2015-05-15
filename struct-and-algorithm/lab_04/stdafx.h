@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <conio.h>
 #include <stdlib.h>
-#include <string>
 #include <iomanip>
 
 using namespace std;
@@ -24,3 +25,6 @@ void createStack(int member);
 void outputStack(int member);
 void push(Item * &head, int value);
 int pop(Item * &head);
+void saveStacks();
+void saveStack(int number);
+void loadStacks();

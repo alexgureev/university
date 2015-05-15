@@ -1,7 +1,9 @@
 #include "stdafx.h"
 
 Item * stack[2];
+FILE * fp;
 int element, counter[2];
+char filePattern[2][20] = { "0-data.txt", "1-data.txt" };
 
 void createStacks()
 {
@@ -79,6 +81,39 @@ int pop(Item * &head)
 	return value;
 }
 
+void saveStacks()
+{
+	for (int i = 0; i <= 1; i++)
+	{
+		saveStack(i);
+	}
+}
+
+void saveStack(int number)
+{
+	int output;
+	fopen_s(&fp, filePattern[number], "w");
+
+	for (int i = 0; i < counter[number]; i++)
+	{
+		if (stack[number] == NULL) {
+			continue;
+		}
+
+		output = pop(stack[number]);
+		fprintf(fp, "%d", output);
+
+		fputc('\n', fp);
+	}
+
+	fclose(fp);
+}
+
+void loadStacks()
+{
+
+}
+
 /*
 	Створити два стеки чисел. 
 	Передбачити введення чисел з клавіатури та зчитування з текстового файла. 
@@ -97,6 +132,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << " MENU" << endl;
 		cout << "1. Create stacks" << endl;
 		cout << "2. Output stacks" << endl;
+		cout << "3. Save stacks to file" << endl;
+		cout << "4. Read stacks from file" << endl;
 		cout << "9. Exit" << endl;
 		cout << endl;
 
@@ -111,6 +148,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			case 1: { createStacks();  break; }
 			case 2: { outputStacks();  break; }
+			case 3: { saveStacks();  break; }
+			case 4: { loadStacks();  break; }
 			case 9: { flag = 1; break; }
 
 			default: break;
