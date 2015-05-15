@@ -12,7 +12,15 @@
 
 using namespace std;
 
+struct Item
+{
+	int value;
+	Item * next;
+};
 
 void createStacks();
-void push(int * value);
-void pop(int * value);
+void outputStacks();
+void createStack(int member);
+void outputStack(int member);
+void push(Item * &head, int value);
+int pop(Item * &head);

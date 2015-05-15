@@ -1,59 +1,82 @@
 #include "stdafx.h"
 
-struct Item
-{
-	int value;
-	Item * next;
-};
-
-Item * head, *current;
-int element, counter;
+Item * stack[2];
+int element, counter[2];
 
 void createStacks()
 {
-	counter = 1;
-	int output;
+	for (int i = 0; i <= 1; i++)
+	{
+		createStack(i);
+	}
+}
+
+void outputStacks()
+{
+	for (int i = 0; i <= 1; i++)
+	{
+		outputStack(i);
+	}
+
+	_getch();
+}
+
+void createStack(int member)
+{
 	char answer;
+	counter[member] = 0;
+
+	cout << "Creating stack No " << member << endl;
 
 	do
 	{
-		cout << "Please enter element [" << counter << "]:";
+		cout << "Please enter element [" << counter[member] << "]:";
 		cin >> element;
 
-		push(&element);
+		push(stack[member], element);
 
 		cout << "One more element? y/n" << endl;
 		answer = _getch();
 
-		counter++;
-	
-	} while (answer != 'n');
+		counter[member]++;
 
-	for (int i = 0; i < counter; i++)
+	} while (answer != 'n');
+}
+
+
+void outputStack(int member)
+{
+	int output;
+
+	cout << "Outputing stack No " << member << endl;
+
+	for (int i = 0; i < counter[member]; i++)
 	{
-		if (head == NULL) {
+		if (stack[member] == NULL) {
 			continue;
 		}
 
-		pop(&output);
+		output = pop(stack[member]);
 		cout << output << endl;
 	}
 }
 
-void push(int * value)
+void push(Item * &head, int value)
 {
-	current = new Item;
-	current->value = * value;
-	current->next = head;
-	head = current;
+	Item * newElement = new Item;
+	newElement->value = value;
+	newElement->next = head;
+	head = newElement;
 }
 
-void pop(int * value)
+int pop(Item * &head)
 {
-	current = head;
-	*value = head->value;
-	head = current->next;
-	delete current;
+	int value = head->value;
+	Item * pointer = head;
+
+	head = head->next;
+	delete pointer;
+	return value;
 }
 
 /*
@@ -73,6 +96,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		system("cls");
 		cout << " MENU" << endl;
 		cout << "1. Create stacks" << endl;
+		cout << "2. Output stacks" << endl;
 		cout << "9. Exit" << endl;
 		cout << endl;
 
@@ -86,6 +110,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		switch (key)
 		{
 			case 1: { createStacks();  break; }
+			case 2: { outputStacks();  break; }
 			case 9: { flag = 1; break; }
 
 			default: break;
