@@ -111,7 +111,34 @@ void saveStack(int number)
 
 void loadStacks()
 {
+	for (int i = 0; i <= 1; i++)
+	{
+		loadStack(i);
+	}
+}
 
+void loadStack(int number)
+{
+	char * input = new char;
+	long int element;
+	counter[number] = 0;
+
+	fopen_s(&fp, filePattern[number], "r");
+
+	while (!feof(fp)) {
+		fgets(input, 100, fp);
+
+		if (feof(fp)) {
+			break;
+		}
+
+		counter[number]++;
+		element = atol(input);
+		push(stack[number], element);
+		
+	}
+
+	fclose(fp);
 }
 
 /*

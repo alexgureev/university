@@ -28,3 +28,4 @@ int pop(Item * &head);
 void saveStacks();
 void saveStack(int number);
 void loadStacks();
+void loadStack(int number);
