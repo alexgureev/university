@@ -160,15 +160,17 @@ void loadStack(int number)
 
 void compareStacks()
 {
+	Item * fillStack = new Item;
+
 	if (isStacksEqual(stack[0], stack[1]) == true)
 	{
 		revert(stack[0], counter[0]);
 	}
 	else 
 	{
-
+		comparisonWalkAndFill(stack[0], stack[1], fillStack);
+		comparisonWalkAndFill(stack[1], stack[0], fillStack);
 	}
-
 }
 
 bool isStacksEqual(Item * &firstStack, Item * &secondStack)
@@ -190,6 +192,36 @@ bool isStacksEqual(Item * &firstStack, Item * &secondStack)
 	} 
 
 	return isStacksEqual(firstStack->next, secondStack->next);
+}
+
+void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultStack)
+{
+	if (isValueExist(checkStack, walkStack->value) == false) 
+	{
+		push(resultStack, walkStack->value);
+	}
+
+	if (walkStack->next == NULL)
+	{
+		return;
+	}
+
+	comparisonWalkAndFill(walkStack->next, checkStack, resultStack);
+}
+
+bool isValueExist(Item * head, int value)
+{
+	if (head->value == value)
+	{
+		return true;
+	}
+
+	if (head->next == NULL)
+	{
+		return false;
+	}
+
+	return isValueExist(head->next, value);
 }
 
 /*
