@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-Item * stack[2];
+Item * stack[3];
 FILE * fp;
-int element, counter[2];
+int element, counter[3];
 char filePattern[2][20] = { "0-data.txt", "1-data.txt" };
 
 void createStacks()
@@ -81,6 +81,21 @@ int pop(Item * &head)
 	return value;
 }
 
+void revert(Item * &head, int size)
+{
+	Item * temporaryStack = new Item;
+	int temporaryValue;
+
+	for (int i = 0; i < size; i++)
+	{
+		temporaryValue = pop(head);
+		push(temporaryStack, temporaryValue);
+	}
+
+	head = temporaryStack;
+	_getch();
+}
+
 void saveStacks()
 {
 	for (int i = 0; i <= 1; i++)
@@ -137,6 +152,8 @@ void loadStack(int number)
 		push(stack[number], element);
 		
 	}
+
+	revert(stack[number], counter[number]);
 
 	fclose(fp);
 }

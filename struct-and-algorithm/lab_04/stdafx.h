@@ -24,6 +24,7 @@ void outputStacks();
 void createStack(int member);
 void outputStack(int member);
 void push(Item * &head, int value);
+void revert(Item * &head, int size);
 int pop(Item * &head);
 void saveStacks();
 void saveStack(int number);
