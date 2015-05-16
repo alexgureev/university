@@ -30,3 +30,7 @@ void saveStacks();
 void saveStack(int number);
 void loadStacks();
 void loadStack(int number);
+void compareStacks();
+bool isStacksEqual(Item * &firstStack, Item * &secondStack);
+Item *createStackFromDiff(Item * &firstStack, Item * &secondStack);
+bool isValueExist(Item * &head, int value);

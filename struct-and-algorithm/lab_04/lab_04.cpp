@@ -158,6 +158,40 @@ void loadStack(int number)
 	fclose(fp);
 }
 
+void compareStacks()
+{
+	if (isStacksEqual(stack[0], stack[1]) == true)
+	{
+		revert(stack[0], counter[0]);
+	}
+	else 
+	{
+
+	}
+
+}
+
+bool isStacksEqual(Item * &firstStack, Item * &secondStack)
+{
+	if (firstStack->next == NULL && secondStack->next != NULL ||
+		firstStack->next != NULL && secondStack->next == NULL)
+	{
+		return false;
+	}
+
+	if (firstStack->value != secondStack->value)
+	{
+		return false;
+	}
+
+	if (firstStack->next == NULL && secondStack->next == NULL)
+	{
+		return true;
+	} 
+
+	return isStacksEqual(firstStack->next, secondStack->next);
+}
+
 /*
 	Створити два стеки чисел. 
 	Передбачити введення чисел з клавіатури та зчитування з текстового файла. 
@@ -178,6 +212,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "2. Output stacks" << endl;
 		cout << "3. Save stacks to file" << endl;
 		cout << "4. Read stacks from file" << endl;
+		cout << "5. Compare stacks" << endl;
 		cout << "9. Exit" << endl;
 		cout << endl;
 
@@ -194,6 +229,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 2: { outputStacks();  break; }
 			case 3: { saveStacks();  break; }
 			case 4: { loadStacks();  break; }
+			case 5: { compareStacks();  break; }
 			case 9: { flag = 1; break; }
 
 			default: break;
