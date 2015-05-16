@@ -83,17 +83,25 @@ int pop(Item * &head)
 
 void revert(Item * &head, int size)
 {
-	Item * temporaryStack = new Item;
+	Item * temporaryStack = new Item();
 	int temporaryValue;
 
 	for (int i = 0; i < size; i++)
 	{
 		temporaryValue = pop(head);
-		push(temporaryStack, temporaryValue);
+
+		if (i == 0)
+		{
+			temporaryStack->value = temporaryValue;
+			temporaryStack->next = NULL;
+		}
+		else
+		{
+			push(temporaryStack, temporaryValue);
+		}
 	}
 
 	head = temporaryStack;
-	_getch();
 }
 
 void saveStacks()
@@ -161,15 +169,41 @@ void loadStack(int number)
 void compareStacks()
 {
 	Item * fillStack = new Item;
+	cout << "First stack: " << endl;
+	outputStackWithGlue(stack[0], ", ");
+
+	cout << "Second stack: " << endl;
+	outputStackWithGlue(stack[1], ", ");
 
 	if (isStacksEqual(stack[0], stack[1]) == true)
 	{
 		revert(stack[0], counter[0]);
+		cout << "Reverted stack: " << endl;
+		outputStackWithGlue(stack[0], ", ");
 	}
 	else 
 	{
-		comparisonWalkAndFill(stack[0], stack[1], fillStack);
-		comparisonWalkAndFill(stack[1], stack[0], fillStack);
+		comparisonWalkAndFill(stack[0], stack[1], fillStack, true);
+		comparisonWalkAndFill(stack[1], stack[0], fillStack, false);
+		cout << "Diff stack: " << endl;
+		outputStackWithGlue(fillStack, ", ");
+	}
+
+	_getch();
+}
+
+void outputStackWithGlue(Item * head, char glue[2])
+{
+	cout << head->value;
+
+	if (head->next != NULL)
+	{
+		cout << glue;
+		outputStackWithGlue(head->next, glue);
+	}
+	else
+	{
+		cout << endl;
 	}
 }
 
@@ -194,11 +228,20 @@ bool isStacksEqual(Item * &firstStack, Item * &secondStack)
 	return isStacksEqual(firstStack->next, secondStack->next);
 }
 
-void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultStack)
+void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultStack, bool first)
 {
 	if (isValueExist(checkStack, walkStack->value) == false) 
 	{
-		push(resultStack, walkStack->value);
+		if (first == true)
+		{
+			resultStack->value = walkStack->value;
+			resultStack->next = NULL;
+		}
+		else
+		{
+			push(resultStack, walkStack->value);
+		}
+		
 	}
 
 	if (walkStack->next == NULL)
@@ -206,7 +249,7 @@ void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultSt
 		return;
 	}
 
-	comparisonWalkAndFill(walkStack->next, checkStack, resultStack);
+	comparisonWalkAndFill(walkStack->next, checkStack, resultStack, false);
 }
 
 bool isValueExist(Item * head, int value)

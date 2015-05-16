@@ -33,4 +33,5 @@ void loadStack(int number);
 void compareStacks();
 bool isStacksEqual(Item * &firstStack, Item * &secondStack);
 bool isValueExist(Item * head, int value);
-void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultStack);
+void comparisonWalkAndFill(Item * walkStack, Item * checkStack, Item * &resultStack, bool first);
+void outputStackWithGlue(Item * head, char glue[2]);
