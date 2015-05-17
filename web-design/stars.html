@@ -34,6 +34,10 @@
   'use strict';
   (function () {
     var stars = {
+      parentElement: null,
+      hoverColor: 'orange',
+      rateColor: 'red',
+      defaultColor: 'blue',
       rate: 0,
       votes: 0,
       rateDictionary: {
@@ -44,10 +48,42 @@
         "5.0": "Awesome"
       },
       mouseOver: function (e) {
+        var value = e.toElement.dataset.value;
+        var elementsList = stars.chooseElementsByMaxValue(value);
 
+        elementsList.forEach(function(element){
+          stars.changeColor(element, stars.hoverColor);
+        });
       },
       mouseOut: function (e) {
+        stars.resetColors();
+      },
+      resetColors: function () {
+        var allElements = stars.getAllStars(stars.parentElement);
+        allElements.forEach(function(element){
+          stars.changeColor(element, stars.defaultColor);
+        });
 
+        var elementsList = stars.chooseElementsByMaxValue(stars.rate);
+
+        elementsList.forEach(function(element){
+          stars.changeColor(element, stars.rateColor);
+        });
+      },
+      changeColor: function (element, color) {
+        element.style.color = color;
+      },
+      chooseElementsByMaxValue: function (value) {
+        var elements = stars.getAllStars(this.parentElement);
+        var filteredElements = [];
+
+        elements.forEach(function (element) {
+          if(element.dataset.value <= value) {
+            filteredElements.push(element);
+          }
+        });
+
+        return filteredElements;
       },
       calculateRate: function (rate) {
         if(stars.votes === 0) {
@@ -72,7 +108,6 @@
       },
       chooseDisplayRate: function () {
         var rate = parseFloat(stars.rate).toFixed(1);
-        console.log(stars.rateDictionary, rate);
         if(stars.rateDictionary[rate] !== undefined) {
           return stars.rateDictionary[rate];
         } else {
@@ -88,12 +123,14 @@
         stars.changeRate(e);
         stars.incrementVotes();
         stars.displayNewData();
+        stars.resetColors();
       },
       getAllStars: function (element) {
         var list = element.querySelectorAll("span");
         return Array.prototype.slice.call(list);
       },
       run: function (element) {
+        this.parentElement = element;
         this.getAllStars(element).forEach(function(child){
           child.addEventListener("mouseover", stars.mouseOver);
           child.addEventListener("mouseout", stars.mouseOut);
