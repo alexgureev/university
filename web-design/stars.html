@@ -11,6 +11,7 @@
         }
         #main span {
             font-size: 50px;
+            color: blue;
         }
     </style>
 </head>
@@ -61,13 +62,9 @@
       resetColors: function () {
         var allElements = stars.getAllStars(stars.parentElement);
         allElements.forEach(function(element){
-          stars.changeColor(element, stars.defaultColor);
-        });
-
-        var elementsList = stars.chooseElementsByMaxValue(stars.rate);
-
-        elementsList.forEach(function(element){
-          stars.changeColor(element, stars.rateColor);
+          var color = (element.dataset.value <= stars.rate)
+            ?  stars.rateColor : stars.defaultColor;
+            stars.changeColor(element, color);
         });
       },
       changeColor: function (element, color) {
