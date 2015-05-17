@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <iostream>
+#include <conio.h>
 
 using namespace std;
 
@@ -14,8 +15,11 @@ struct Item
 	Item * next;
 };
 
-int T, t1, t2, n;
-
 void inputData();
 int dequeue();
 void enqueue(int time);
+void modelateQueue();
+void createQueue();
+int getRandomTime(int max);
+void outputQueueWithGlue(Item * head, char glue[2]);
+void processTick(int tick);
