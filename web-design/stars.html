@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>*****</title>
+    <style>
+        #main {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+        }
+        #main span {
+            font-size: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+  <div id="stars">
+    <span data-value="1">*</span>
+    <span data-value="2">*</span>
+    <span data-value="3">*</span>
+    <span data-value="4">*</span>
+    <span data-value="5">*</span>
+  </div>
+  <div id="rate">
+
+  </div>
+  <div id="votes">
+
+  </div>
+</div>
+<script>
+  'use strict';
+  (function () {
+    var stars = {
+      rate: 0,
+      votes: 0,
+      rateDictionary: {
+        "1.0": "Bad",
+        "2.0": "Poor",
+        "3.0": "Average",
+        "4.0": "Good",
+        "5.0": "Awesome"
+      },
+      mouseOver: function (e) {
+
+      },
+      mouseOut: function (e) {
+
+      },
+      calculateRate: function (rate) {
+        if(stars.votes === 0) {
+          return rate;
+        }
+        var totalRate = (parseFloat(stars.rate) * parseInt(stars.votes) + parseFloat(rate) );
+        return ((totalRate) / (parseInt(stars.votes) + 1));
+      },
+      changeRate: function (e) {
+        var value = e.toElement.dataset.value;
+        var newRate = stars.calculateRate(value);
+        stars.rate = newRate;
+      },
+      incrementVotes: function () {
+        stars.votes++;
+      },
+      setNewRate: function (rate) {
+        document.getElementById("rate").innerText = rate;
+      },
+      setVotes: function (votes) {
+        document.getElementById("votes").innerText = votes;
+      },
+      chooseDisplayRate: function () {
+        var rate = parseFloat(stars.rate).toFixed(1);
+        console.log(stars.rateDictionary, rate);
+        if(stars.rateDictionary[rate] !== undefined) {
+          return stars.rateDictionary[rate];
+        } else {
+          return rate;
+        }
+      },
+      displayNewData: function () {
+        var rate = stars.chooseDisplayRate();
+        stars.setNewRate(rate);
+        stars.setVotes(stars.votes);
+      },
+      click: function (e) {
+        stars.changeRate(e);
+        stars.incrementVotes();
+        stars.displayNewData();
+      },
+      getAllStars: function (element) {
+        var list = element.querySelectorAll("span");
+        return Array.prototype.slice.call(list);
+      },
+      run: function (element) {
+        this.getAllStars(element).forEach(function(child){
+          child.addEventListener("mouseover", stars.mouseOver);
+          child.addEventListener("mouseout", stars.mouseOut);
+          child.addEventListener("click", stars.click);
+        });
+      }
+    };
+
+    stars.run(document.getElementById("main"));
+  }());
+</script>
+</body>
+</html>
