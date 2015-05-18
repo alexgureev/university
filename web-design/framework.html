@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My framework</title>
+
+</head>
+<body>
+<div id="main">
+123
+</div>
+<script>
+
+  var $ = {};
+
+  (function (object) {
+    
+    function Decorator(obj) {
+      this.state = obj;
+      this.on = function (eventName, callback) {
+        obj.addEventListener(eventName, callback);      // $.id("main").on("click", function(){alert(123)});
+        return this;
+      };
+    };
+
+    object.id = function (a) {
+      var element = document.getElementById(a);
+      return new Decorator(element);
+    };
+
+    return object;
+  })($)
+
+</script>
+</body>
+</html>
