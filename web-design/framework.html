@@ -6,19 +6,45 @@
 
 </head>
 <body>
-<div id="main">
+<div id="main" class="d3">
 123
 </div>
+
+<div id="next" class="a1 a2">
+  <span>test</span>
+</div>
+
 <script>
 
   var $ = {};
 
   (function (object) {
-    
+    // attr, html, class
     function Decorator(obj) {
+      // assign obj to state variable
       this.state = obj;
-      this.on = function (eventName, callback) {
-        obj.addEventListener(eventName, callback);      // $.id("main").on("click", function(){alert(123)});
+
+      // wrap adding event listener
+      this.on = function (value, callback) {
+        obj.addEventListener(value, callback);      // $.id("main").on("click", function(){alert(123)});
+        return this;
+      };
+
+      // return value of class attribute
+      this.getClass = function () {
+        return obj.className;
+      };
+
+      // add class to object
+      this.addClass = function (value) {
+        obj.addClass(value);
+        return this;
+      };
+
+      // remove subquery in string
+      this.removeClass = function(value) {
+        obj.className = obj.className
+          .replace(new RegExp(' ?\\b' + value + '\\b'), '');
         return this;
       };
     };
