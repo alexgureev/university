@@ -58,7 +58,22 @@
           obj.setAttribute(name, value);
           return value;
         }
-      }
+      };
+
+      // fire event
+      this.trigger = function (name) {
+        var event = new Event(name);
+        obj.dispatchEvent(event);
+      };
+
+      // change html
+      this.html = function (value) {
+        if(value === undefined) {
+          return obj.innerHTML;
+        } else {
+          obj.innerHTML = value;
+        }
+      };
     };
 
     object.id = function (a) {
