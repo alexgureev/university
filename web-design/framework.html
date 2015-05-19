@@ -10,7 +10,7 @@
 123
 </div>
 
-<div id="next" class="a1 a2">
+<div id="next" class="a1 a2" name="bla">
   <span>test</span>
 </div>
 
@@ -47,6 +47,18 @@
           .replace(new RegExp(' ?\\b' + value + '\\b'), '');
         return this;
       };
+
+      // get or set attribute
+      this.attr = function (name, value) {
+        var attr = obj.getAttribute(name);
+
+        if(value === undefined) {
+          return attr;
+        } else {
+          obj.setAttribute(name, value);
+          return value;
+        }
+      }
     };
 
     object.id = function (a) {
