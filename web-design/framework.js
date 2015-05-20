@@ -77,5 +77,19 @@ var $ = {};
     return new Decorator(element);
   };
 
+  object.decorate = function (element) {
+    return new Decorator(element);
+  };
+
+  object.fn = {
+    hide: function (obj) {
+      obj.css("display", "none");
+      return obj;
+    },
+    show: function (obj) {
+      obj.css("display", "block");
+      return obj;
+    }
+  };
   return object;
 })($);
