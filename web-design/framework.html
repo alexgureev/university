@@ -74,6 +74,15 @@
           obj.innerHTML = value;
         }
       };
+
+      // change css
+      this.css = function (name, value) {
+        if(value === undefined) {
+          return obj.style[name];
+        } else {
+          obj.style[name] = value;
+        }
+      };
     };
 
     object.id = function (a) {
