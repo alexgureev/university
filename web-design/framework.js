@@ -70,6 +70,10 @@ var $ = {};
       }
       return this;
     };
+
+    this.getProperty = function (name) {
+      return obj[name];
+    }
   }
 
   object.id = function (a) {
@@ -89,6 +93,22 @@ var $ = {};
     show: function (obj) {
       obj.css("display", "block");
       return obj;
+    },
+    getSelection: function() {
+      var txt = '';
+
+      if (window.getSelection) {
+        txt = window.getSelection().toString();
+        window.getSelection().empty();
+      }
+
+      return txt.trim();
+    },
+    ajax: function (url) {
+      var xhReq = new XMLHttpRequest();
+      xhReq.open("GET", url, false);
+      xhReq.send(null);
+      return xhReq.response;
     }
   };
   return object;

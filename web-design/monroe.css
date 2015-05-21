@@ -1,0 +1,99 @@
+div#content {
+  width: 80%;
+  padding: 50px;
+}
+
+b#arrow {
+  color: #cccccc;
+  border-top: 9px dashed;
+  border-right: 9px solid transparent;
+  border-left: 9px solid transparent;
+  margin: 0px;
+  display: block;
+}
+
+div#container {
+  margin: 0px -1px 0px 0px;
+  width: 18px;
+  height: 10px;
+  display: block;
+  left: 89px;
+  top: 127px;
+}
+
+/*For tooltip box*/
+div#tooltipFrame {
+  line-height: 16px;
+  border-width: 1px;
+  color: #333;
+  border-color: #BBBBBB;
+  padding: 20px;
+  font-size: 12px;
+  font-family: Verdana, Arial;
+  border-radius: 6px; /*Rounded corners. N/A for IE 8 and below.*/
+  box-shadow: 0 1px 4px #AAAAAA; /*Drop shadow. N/A for IE 8 and below.*/
+}
+
+div#tooltipFrame, div.tooltipFrameInner {
+  background-color: #EAECF0;
+}
+
+/* For hyperlink within tooltip */
+div#tooltipFrame a {
+  color: #36c;
+}
+
+/*The settings below should remain unchanged*/
+div#tooltip {
+  position: absolute;
+  visibility: visible;
+  overflow: visible;
+  z-index: 9999999999;
+  top: 0px;
+  display: none;
+  padding: 9px;
+  opacity: 1;
+  left: 20px;
+}
+
+div#tooltipFrame {
+  float: left;
+  border-style: solid;
+  position: relative;
+  overflow: hidden;
+  width: 300px;
+  height: 77px;
+}
+
+div.tooltipContent {
+  width: 300px;
+  height: 77px;
+  top: auto;
+  left: auto;
+  position: absolute;
+  opacity: 1;
+}
+
+div#container {
+  position: absolute;
+  text-align: left;
+}
+
+div#container em, div#container b {
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/*workable with bootstrap*/
+div#tooltipFrame, div#tooltipFrame div {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+img {
+  vertical-align: middle;
+  border: 0;
+}
