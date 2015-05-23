@@ -154,3 +154,127 @@ int  V_CSclip(float *x0, float *y0, float *x1, float *y1)
 all:
 	return (visible);
 }  /* V_CSclip */
+
+#include<windows.h>
+#include<iostream>
+#include <cmath>
+#include <conio.h>
+#include <cstdlib>
+
+using namespace std;
+
+#define LEFT  1  /* двоичное 0001 */
+#define RIGHT 2  /* двоичное 0010 */
+#define BOT   4  /* двоичное 0100 */
+#define TOP   8  /* двоичное 1000 */
+
+/* ¬ычисление кода точки
+r : указатель на struct rect; p : указатель на struct point */
+#define vcode(r, p) \
+	((((p)->x < (r)->x_min) ? LEFT : 0) +  /* +1 если точка левее пр€моугольника */ \
+	(((p)->x >(r)->x_max) ? RIGHT : 0) +  /* +2 если точка правее пр€моугольника */\
+	(((p)->y < (r)->y_min) ? BOT : 0) +  /* +4 если точка ниже пр€моугольника */  \
+	(((p)->y >(r)->y_max) ? TOP : 0))     /* +8 если точка выше пр€моугольника */
+
+/* точка */
+struct point {
+	double x, y;
+};
+
+/* пр€моугольник */
+struct rect {
+	double x_min, y_min, x_max, y_max;
+};
+
+
+
+int cohen_sutherland(const struct rect *r, struct point *a, struct point *b);
+
+
+void main() {
+	system("color f0");
+	rect r1;
+	point a1, b1;
+	cout << "Enter rectangle's borders' coordinates:\nLeft: "; cin >> r1.x_min;
+	cout << "Right: "; cin >> r1.x_max;
+	cout << "Top: "; cin >> r1.y_min;
+	cout << "Bottom: "; cin >> r1.y_max;
+	cout << "\nRectangle width = " << r1.x_max - r1.x_min << "; height" << r1.y_max - r1.y_min << endl;
+
+	cout << "Enter line's starting and ending points:\nx1: "; cin >> a1.x; cout << "y1: "; cin >> a1.y;
+	cout << "x2: "; cin >> b1.x; cout << "y2: "; cin >> b1.y;
+	cout << "\n============================\n\n";
+	cout << "Line: \t\t(" << a1.x << "; " << a1.y << ") - (" << b1.x << "; " << b1.y << ")\n";
+	int i = 1;
+
+	cohen_sutherland(&r1, &a1, &b1);
+
+	cout << "Rectangle:\t" << "(" << r1.x_min << "; " << r1.y_min << ") - (" << r1.x_max << "; " << r1.y_min << ")\n";
+	cout << "\t\t" << "(" << r1.x_max << "; " << r1.y_min << ") - (" << r1.x_max << "; " << r1.y_max << ")\n\n";
+	cout << "\nCropped line: (" << a1.x << "; " << a1.y << ") - (" << b1.x << "; " << b1.y << ")\n";
+	cout << "\n============================\n\n";
+	system("pause");
+}
+
+
+/* ≈сли отрезок ab не пересекает пр€моугольник r, функци€ возвращает -1;
+если отрезок ab пересекает пр€моугольник r, функци€ возвращает 0 и отсекает
+те части отрезка, которые наход€тс€ вне пр€моугольника */
+int cohen_sutherland(const struct rect *r, struct point *a, struct point *b)
+{
+	int code_a, code_b, code; /* код концов отрезка */
+	struct point *c; /* одна из точек */
+
+	code_a = vcode(r, a);
+	code_b = vcode(r, b);
+
+	/* пока одна из точек отрезка вне пр€моугольника */
+	while (code_a | code_b) {
+		/* если обе точки с одной стороны пр€моугольника, то отрезок не пересекает пр€моугольник */
+		if (code_a & code_b)
+			return -1;
+
+		/* выбираем точку c с ненулевым кодом */
+		if (code_a) {
+			code = code_a;
+			c = a;
+		}
+		else {
+			code = code_b;
+			c = b;
+		}
+
+		/* если c левее r, то передвигаем c на пр€мую x = r->x_min
+		если c правее r, то передвигаем c на пр€мую x = r->x_max */
+		if (code & LEFT) {
+			c->y += (a->y - b->y) * (r->x_min - c->x) / (a->x - b->x);
+			c->x = r->x_min;
+		}
+		else if (code & RIGHT) {
+			c->y += (a->y - b->y) * (r->x_max - c->x) / (a->x - b->x);
+			c->x = r->x_max;
+		}/* если c ниже r, то передвигаем c на пр€мую y = r->y_min
+		 если c выше r, то передвигаем c на пр€мую y = r->y_max */
+		else if (code & TOP) {
+			c->x += (a->x - b->x) * (r->y_min - c->y) / (a->y - b->y);
+			c->y = r->y_min;
+		}
+		else if (code & BOT) {
+			c->x += (a->x - b->x) * (r->y_max - c->y) / (a->y - b->y);
+			c->y = r->y_max;
+		}
+
+		/* обновл€ем код */
+		if (code == code_a) {
+			a = c;
+			code_a = vcode(r, a);
+		}
+		else {
+			b = c;
+			code_b = vcode(r, b);
+		}
+	}
+	/* оба кода равны 0, следовательно обе точки в пр€моугольнике */
+	return 0;
+}
+
