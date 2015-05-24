@@ -1,40 +1,79 @@
 #include "stdafx.h"
 
+
+#include "DrawHelper.h"
+
+DrawHelper * helper = new DrawHelper();
+Square rectangle;
+Point A, B;
+
+void inputData()
+{
+	cout << "Please, enter coornidates of Left Top corner (x; y):"
+		<< endl
+		<< "x: "; 
+	cin >> rectangle.xLeftTop;
+	cout << "y: "; 
+	cin >> rectangle.yLeftTop;
+
+	cout << "Please, enter coornidates of Right Bottom corner (x; y):"
+		<< endl
+		<< "x: "; 
+	cin >> rectangle.xRightBottom;
+	cout << "y: "; 
+	cin >> rectangle.yRightBottom;
+
+	cout << endl
+		<< "Width = " 
+		<< rectangle.xRightBottom - rectangle.xLeftTop 
+		<< "; Height = " 
+		<< rectangle.yRightBottom - rectangle.yLeftTop 
+		<< endl;
+
+	cout << "Enter line starting point A(x; y)"
+		<< endl
+		<< "x: ";
+	cin >> A.x;
+	cout << "y: ";
+	cin >> A.y;
+
+	cout << "Enter line ending point B(x; y)"
+		<< endl
+		<< "x: ";
+	cin >> B.x;
+	cout << "y: ";
+	cin >> B.y;
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system("color f0");
-	rect r1;
-	point a1, b1;
-	cout << "Enter rectangle's borders' coordinates:\nLeft: "; cin >> r1.x_min;
-	cout << "Right: "; cin >> r1.x_max;
-	cout << "Top: "; cin >> r1.y_min;
-	cout << "Bottom: "; cin >> r1.y_max;
-	cout << "\nRectangle width = " << r1.x_max - r1.x_min << "; height" << r1.y_max - r1.y_min << endl;
+	helper->setTerminalColor();
+	inputData();
 
-	cout << "Enter line's starting and ending points:\nx1: "; cin >> a1.x; cout << "y1: "; cin >> a1.y;
-	cout << "x2: "; cin >> b1.x; cout << "y2: "; cin >> b1.y;
-	cout << "\n============================\n\n";
-	cout << "Line: \t\t(" << a1.x << "; " << a1.y << ") - (" << b1.x << "; " << b1.y << ")\n";
-	int i = 1;
-
-	cohen_sutherland(&r1, &a1, &b1);
-
-	cout << "Rectangle:\t" << "(" << r1.x_min << "; " << r1.y_min << ") - (" << r1.x_max << "; " << r1.y_min << ")\n";
-	cout << "\t\t" << "(" << r1.x_max << "; " << r1.y_min << ") - (" << r1.x_max << "; " << r1.y_max << ")\n\n";
-	cout << "\nCropped line: (" << a1.x << "; " << a1.y << ") - (" << b1.x << "; " << b1.y << ")\n";
-	cout << "\n============================\n\n";
-	system("pause");
-
+	helper->pause();
+	helper->clearScreen();
+	
+	int result;
+	while (helper->wait())  {
+		helper->drawRectangle(&rectangle);
+		helper->drawLine(A.x, A.y, B.x, B.y, helper->getGreenColor());
+		result = cohen_sutherland(&rectangle, &A, &B);
+		helper->drawLine(A.x, A.y, B.x, B.y, helper->getBlackColor());
+	}
+	
+	helper->clearScreen();
+	helper->pause();
 	return 0;
 }
+
 
 /* Если отрезок ab не пересекает прямоугольник r, функция возвращает -1;
 если отрезок ab пересекает прямоугольник r, функция возвращает 0 и отсекает
 те части отрезка, которые находятся вне прямоугольника */
-int cohen_sutherland(const struct rect *r, struct point *a, struct point *b)
+int cohen_sutherland(const struct Square *r, struct Point *a, struct Point *b)
 {
 	int code_a, code_b, code; /* код концов отрезка */
-	struct point *c; /* одна из точек */
+	struct Point *c; /* одна из точек */
 
 	code_a = vcode(r, a);
 	code_b = vcode(r, b);
@@ -55,24 +94,24 @@ int cohen_sutherland(const struct rect *r, struct point *a, struct point *b)
 			c = b;
 		}
 
-		/* если c левее r, то передвигаем c на прямую x = r->x_min
-		если c правее r, то передвигаем c на прямую x = r->x_max */
+		/* если c левее r, то передвигаем c на прямую x = r->xLeftTop
+		если c правее r, то передвигаем c на прямую x = r->xRightBottom */
 		if (code & LEFT) {
-			c->y += (a->y - b->y) * (r->x_min - c->x) / (a->x - b->x);
-			c->x = r->x_min;
+			c->y += (a->y - b->y) * (r->xLeftTop - c->x) / (a->x - b->x);
+			c->x = r->xLeftTop;
 		}
 		else if (code & RIGHT) {
-			c->y += (a->y - b->y) * (r->x_max - c->x) / (a->x - b->x);
-			c->x = r->x_max;
-		}/* если c ниже r, то передвигаем c на прямую y = r->y_min
-		 если c выше r, то передвигаем c на прямую y = r->y_max */
+			c->y += (a->y - b->y) * (r->xRightBottom - c->x) / (a->x - b->x);
+			c->x = r->xRightBottom;
+		}/* если c ниже r, то передвигаем c на прямую y = r->yLeftTop
+		 если c выше r, то передвигаем c на прямую y = r->yRightBottom */
 		else if (code & TOP) {
-			c->x += (a->x - b->x) * (r->y_min - c->y) / (a->y - b->y);
-			c->y = r->y_min;
+			c->x += (a->x - b->x) * (r->yLeftTop - c->y) / (a->y - b->y);
+			c->y = r->yLeftTop;
 		}
 		else if (code & BOT) {
-			c->x += (a->x - b->x) * (r->y_max - c->y) / (a->y - b->y);
-			c->y = r->y_max;
+			c->x += (a->x - b->x) * (r->yRightBottom - c->y) / (a->y - b->y);
+			c->y = r->yRightBottom;
 		}
 
 		/* обновляем код */

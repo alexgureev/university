@@ -12,27 +12,29 @@
 
 using namespace std;
 
-#define LEFT  1  /* двоичное 0001 */
-#define RIGHT 2  /* двоичное 0010 */
-#define BOT   4  /* двоичное 0100 */
-#define TOP   8  /* двоичное 1000 */
+#define LEFT  1  /* 0001 */
+#define RIGHT 2  /* 0010 */
+#define BOT   4  /* 0100 */
+#define TOP   8  /* 1000 */
 
-/* Вычисление кода точки
-r : указатель на struct rect; p : указатель на struct point */
 #define vcode(r, p) \
-	((((p)->x < (r)->x_min) ? LEFT : 0) +  /* +1 если точка левее прямоугольника */ \
-	(((p)->x >(r)->x_max) ? RIGHT : 0) +  /* +2 если точка правее прямоугольника */\
-	(((p)->y < (r)->y_min) ? BOT : 0) +  /* +4 если точка ниже прямоугольника */  \
-	(((p)->y >(r)->y_max) ? TOP : 0))     /* +8 если точка выше прямоугольника */
+	((((p)->x < (r)->xLeftTop) ? LEFT : 0) +      /* +1 если точка левее прямоугольника */ \
+	(((p)->x > (r)->xRightBottom) ? RIGHT : 0) +  /* +2 если точка правее прямоугольника */ \
+	(((p)->y < (r)->yLeftTop) ? BOT : 0) +		  /* +4 если точка ниже прямоугольника */  \
+	(((p)->y > (r)->yRightBottom) ? TOP : 0))     /* +8 если точка выше прямоугольника */
 
-/* точка */
-struct point {
-	double x, y;
+struct Point 
+{
+	int x;
+	int y;
 };
 
-/* прямоугольник */
-struct rect {
-	double x_min, y_min, x_max, y_max;
+struct Square
+{
+	int xLeftTop;
+	int yLeftTop; 
+	int xRightBottom;
+	int yRightBottom;
 };
 
-int cohen_sutherland(const struct rect *r, struct point *a, struct point *b);
+int cohen_sutherland(const struct Square *r, struct Point *a, struct Point *b);
