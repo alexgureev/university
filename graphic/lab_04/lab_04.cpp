@@ -1,19 +1,4 @@
-// lab_04.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-	return 0;
-}
-
-#include <fstream>
-#include <iostream>
-#include <windows.h>
-#include <math.h>
-using namespace std;
 
 int findMandelbrot(double cr, double ci, int max_iterations) {
 	int i = 0;
@@ -41,7 +26,8 @@ double mapToImaginary(int y, int imageHeight, double minI, double maxI) {
 
 int mn();
 
-int main() {
+int _tmain(int argc, _TCHAR* argv[])
+{
 	system("color f0");
 	ifstream fin("input.txt");
 	int imageWidth, imageHeight, maxN;

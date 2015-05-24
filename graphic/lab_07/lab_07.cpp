@@ -1,36 +1,9 @@
-// lab_07.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-	return 0;
-}
-
-#include <stdio.h>
-#include <windows.h>
-#include <math.h>
-#include <iostream>
-#include <stdlib.h>
-#include <conio.h>
-
-using namespace std;
-#define MAXIT 20
-
-struct point {
-	int x, y;
-};
-
-void eraseLine(point p1, point p2);
-void drawLine(point p1, point p2);
-int tri(point startp, float sidel, int iter);
 
 HWND myconsole = GetConsoleWindow();
 HDC mydc = GetDC(myconsole);
 
-void main()
+int _tmain(int argc, _TCHAR* argv[])
 {
 	system("color f0");
 	point s1;
@@ -41,6 +14,8 @@ void main()
 		tri(s1, a1, iter);
 	}
 	cin.ignore();
+
+	return 0;
 }
 
 int tri(point startp, float sidel, int iter) {

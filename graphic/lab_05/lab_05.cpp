@@ -1,26 +1,9 @@
-// lab_05.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-	return 0;
-}
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <conio.h>
-#include <windows.h>
-#define MAXIT 20
-/* maximum number of iterations */
-#define TRUE 1
 
 HWND myconsole = GetConsoleWindow();
 HDC mydc = GetDC(myconsole);
 
-void main()
+int _tmain(int argc, _TCHAR* argv[])
 {
 	system("color f0");
 	double      x, y, newx, newy;
@@ -71,5 +54,6 @@ void main()
 	}  /* while (!kbhit()) */
 	if (_getch() == 0)
 		_getch();
-
 }
+
+

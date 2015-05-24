@@ -6,77 +6,51 @@ COLORREF COLOR = RGB(0, 0, 0);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
 	system("color f0");
-	int ix1, ix2, iy1, iy2;
+	int ix1, iy1, ir1;
 	puts("Enter x1: ");
 	cin >> ix1;
 	puts("Enter y1: ");
 	cin >> iy1;
-	puts("Enter x2: ");
-	cin >> ix2;
-	puts("Enter y2: ");
-	cin >> iy2;
-	cout << "\nPlotting a line from (" << ix1 << "; " << iy1 << ") to (" << ix2 << "; " << iy2 << ")\n\n";
+	puts("Enter r: ");
+	cin >> ir1;
+	cout << "\nPlotting a circle with the center at (" << ix1 << "; " << iy1 << ") and radius of " << ir1 << "\n\n";
 	system("pause");
 	system("cls");
 	while (!_kbhit())  {
-		Bresenham(ix1, iy1, ix2, iy2);
+		DrawCircle(ix1, iy1, ir1);
 	}
-	cin.ignore();
 	ReleaseDC(myconsole, mydc);
+	cin.ignore();
+
 	return 0;
 }
 
-void Bresenham(int x1, int y1, int const x2, int const y2) {
-	int delta_x(x2 - x1);
-
-	signed char const ix((delta_x > 0) - (delta_x < 0));
-	delta_x = std::abs(delta_x) << 1;
-
-	int delta_y(y2 - y1);
-
-	signed char const iy((delta_y > 0) - (delta_y < 0));
-	delta_y = std::abs(delta_y) << 1;
-
-	SetPixel(mydc, x1, y1, COLOR);
-
-	if (delta_x >= delta_y)
+void DrawCircle(int xc, int yc, int radius) {
+	int x = 0;
+	int y = radius;
+	int delta = 2 - 2 * radius;
+	int error = 0;
+	while (y >= 0)
 	{
-
-		int error(delta_y - (delta_x >> 1));
-
-		while (x1 != x2)
-		{
-			if ((error >= 0) && (error || (ix > 0)))
-			{
-				error -= delta_x;
-				y1 += iy;
-			}
-
-			error += delta_y;
-			x1 += ix;
-
-			SetPixel(mydc, x1, y1, COLOR);
+		SetPixel(mydc, xc + x, yc + y, COLOR);
+		SetPixel(mydc, xc - x, yc + y, COLOR);
+		SetPixel(mydc, xc + x, yc - y, COLOR);
+		SetPixel(mydc, xc - x, yc - y, COLOR);
+		error = 2 * (delta + y) - 1;
+		if (delta < 0 && error <= 0) {
+			++x;
+			delta += 2 * x + 1;
+			continue;
 		}
-	}
-	else
-	{
-
-		int error(delta_x - (delta_y >> 1));
-
-		while (y1 != y2)
-		{
-			if ((error >= 0) && (error || (iy > 0)))
-			{
-				error -= delta_y;
-				x1 += ix;
-			}
-
-			error += delta_x;
-			y1 += iy;
-
-			SetPixel(mydc, x1, y1, COLOR);
+		error = 2 * (delta - x) - 1;
+		if (delta > 0 && error > 0) {
+			--y;
+			delta += 1 - 2 * y;
+			continue;
 		}
+		++x;
+		delta += 2 * (x - y);
+		--y;
 	}
 }

@@ -1,15 +1,22 @@
-// stdafx.h : include file for standard system include files,
-// or project specific include files that are used frequently, but
-// are changed infrequently
-//
-
 #pragma once
 
 #include "targetver.h"
 
 #include <stdio.h>
 #include <tchar.h>
+#include <windows.h>
+#include <math.h>
+#include <iostream>
+#include <stdlib.h>
+#include <conio.h>
 
+using namespace std;
+#define MAXIT 20
 
+struct point {
+	int x, y;
+};
 
-// TODO: reference additional headers your program requires here
+void eraseLine(point p1, point p2);
+void drawLine(point p1, point p2);
+int tri(point startp, float sidel, int iter);
