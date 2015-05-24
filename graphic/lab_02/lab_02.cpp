@@ -2,18 +2,18 @@
 #include "DrawHelper.h"
 
 DrawHelper * helper = new DrawHelper();
-int x1, x2, y1, y2;
+int xA, xB, yA, yB;
 
 void inputData()
 {
-	cout << "Enter x1: ";
-	cin >> x1;
-	cout << "Enter y1: ";
-	cin >> y1;
-	cout << "Enter x2: ";
-	cin >> x2;
-	cout << "Enter y2: ";
-	cin >> y2;
+	cout << "Enter xA: ";
+	cin >> xA;
+	cout << "Enter yA: ";
+	cin >> yA;
+	cout << "Enter xB: ";
+	cin >> xB;
+	cout << "Enter yB: ";
+	cin >> yB;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -21,15 +21,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	helper->setTerminalColor();
 	inputData();
 
-	cout << endl
-		<< "Drawing line from A(" 
-		<< x1 
+	cout << "Drawing a line from A(" 
+		<< xA 
 		<< "; " 
-		<< y1 
+		<< yA 
 		<< ") to B(" 
-		<< x2 
+		<< xB 
 		<< "; " 
-		<< y2 
+		<< yB 
 		<< ")"
 		<< endl << endl;
 
@@ -37,7 +36,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	helper->clearScreen();
 
 	while (helper->wait())  {
-		helper->drawLine(x1, y1, x2, y2);
+		helper->drawLine(xA, yA, xB, yB);
 	}
 
 	return 0;
