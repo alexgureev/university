@@ -1,34 +1,10 @@
-// lab_03.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-	return 0;
-}
-
-#include<windows.h>
-#include<iostream>
-#include <cmath>
-#include <conio.h>
-#include <cstdlib>
-
-using namespace std;
-
-#define PI 3.14
-
-void Bresenham(int x1, int y1, int const x2, int const y2);
-
-
 
 HWND myconsole = GetConsoleWindow();
 HDC mydc = GetDC(myconsole);
 COLORREF COLOR = RGB(0, 0, 0);
 
-
-int main()
+int _tmain(int argc, _TCHAR* argv[])
 {
 
 	system("color f0");
