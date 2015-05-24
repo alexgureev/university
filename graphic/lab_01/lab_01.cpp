@@ -54,13 +54,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	helper->clearScreen();
 	
 	int result;
-	while (helper->wait())  {
-		helper->drawRectangle(&rectangle);
-		helper->drawLine(A.x, A.y, B.x, B.y, helper->getGreenColor());
-		result = cohen_sutherland(&rectangle, &A, &B);
+
+	helper->drawRectangle(&rectangle);
+	helper->drawLine(A.x, A.y, B.x, B.y, helper->getGreenColor());
+	result = cohen_sutherland(&rectangle, &A, &B);
+	if (result != -1)
+	{
 		helper->drawLine(A.x, A.y, B.x, B.y, helper->getBlackColor());
 	}
-	
+		
+	_getch();
+
 	helper->clearScreen();
 	helper->pause();
 	return 0;

@@ -1,23 +1,27 @@
 #include "stdafx.h"
+#include "DrawHelper.h"
 
-HWND myconsole = GetConsoleWindow();
-HDC mydc = GetDC(myconsole);
+#define ITERATION 30
+
+DrawHelper * helper = new DrawHelper();
+
+double      x, y, newx, newy;
+int   rand_num;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system("color f0");
-	double      x, y, newx, newy;
-	unsigned i; /* counter variable */
-	int   rand_num;
+	helper->setTerminalColor();
 
 	srand(0);
-	while (!_kbhit())
+	while (helper->wait())
 	{
-		x = (double)rand() / 50000.0;
-		y = (double)rand() / 50000.0;
-		for (i = 0; i < MAXIT; i++)
+		x = (double) rand() / 100000.0;
+		y = (double) rand() / 100000.0;
+
+		for (int i = 0; i < ITERATION; i++)
 		{
 			rand_num = rand();
+
 			if (rand_num < 0.01 * RAND_MAX)
 			{
 				newx = 0;
@@ -48,10 +52,14 @@ int _tmain(int argc, _TCHAR* argv[])
 				x = newx;
 				y = newy;
 			}
-		}  /* for loop */
+		}  
+
 		if ((x >= -5.0) && (x <= 5.0) && (y >= 0.0) && (y <= 10.0))
-			SetPixel(mydc, 200 + x * 23, 280 - y * 25, RGB(0, 225, 0));
-	}  /* while (!kbhit()) */
+		{
+			helper->drawPixel(200 + x * 32, 370 - y * 35, helper->getRedColor());
+		}
+	}
+
 	if (_getch() == 0)
 		_getch();
 }
