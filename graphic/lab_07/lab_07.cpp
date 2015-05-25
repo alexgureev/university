@@ -1,135 +1,105 @@
 #include "stdafx.h"
+#include "DrawHelper.h"
 
-HWND myconsole = GetConsoleWindow();
-HDC mydc = GetDC(myconsole);
+DrawHelper * helper = new DrawHelper();
+Point vertext;
+float sideLength;
+int iterations;
+
+void inputData()
+{
+	/* 300 20 500 8 */
+	cout << "Enter Vertex (x; y): "
+		 << endl
+		 << "x= ";
+	cin >> vertext.x;
+	cout << "y= ";
+	cin >> vertext.y;
+
+	cout << endl
+		<< "Enter side length: ";
+	cin >> sideLength;
+
+	cout << endl
+		<< "Enter iterations number: ";
+	cin >> iterations;
+}
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system("color f0");
-	point s1;
-	s1.x = 300.0; s1.y = 20.0;
-	float a1 = 500.0;
-	int iter = 8;
-	while (!_kbhit()) {
-		tri(s1, a1, iter);
-	}
-	cin.ignore();
+	helper->setTerminalColor();
+	inputData();
 
+	helper->pause();
+	helper->clearScreen();
+
+	drawTriangle(vertext, sideLength, iterations);
+
+	helper->clearScreen();
+	helper->pause();
 	return 0;
 }
 
-int tri(point startp, float sidel, int iter) {
-	if (iter == 0) return 0;
-	else {
-		point top_t1, top_t2, midpoint, temp1, temp2;
-		top_t1.x = startp.x - sidel / 2;
-		top_t2.x = startp.x + sidel / 2;
-		top_t1.y = startp.y + sqrt(3.0) / 2 * sidel;
-		top_t2.y = top_t1.y;
-		drawLine(startp, top_t1);
-		drawLine(startp, top_t2);
-		drawLine(top_t2, top_t1);
-
-		temp1.x = top_t1.x;
-		temp1.y = top_t1.y;
-		temp2.x = top_t2.x;
-		temp2.y = temp1.y;
-		float k = 0;
-		for (int i = top_t1.y; i > startp.y; i--) {
-			k++;
-			temp1.y = i;
-			temp2.y = temp1.y;
-			temp1.x = top_t1.x + k / 1.74;
-			temp2.x = top_t2.x - k / 1.74;
-			drawLine(temp1, temp2);
-		}
-
-		temp1.x = startp.x - sidel / 4;
-		temp1.y = startp.y + sqrt(3.0) / 4 * sidel;
-		temp2.x = startp.x + sidel / 4;
-		temp2.y = temp1.y;
-		k = 0;
-		for (int i = temp1.y; i < top_t1.y; i++) {
-			k++;
-			temp1.y = i;
-			temp2.y = temp1.y;
-			temp1.x = startp.x - sidel / 4 + k / 1.74;
-			temp2.x = startp.x + sidel / 4 - k / 1.74;
-			eraseLine(temp1, temp2);
-		}
-
-		midpoint = startp;
-		tri(midpoint, sidel / 2, iter - 1);
-
-		midpoint.x = startp.x - sidel / 4;
-		midpoint.y = startp.y + sqrt(3.0) / 4 * sidel;
-		tri(midpoint, sidel / 2, iter - 1);
-
-		midpoint.x = startp.x + sidel / 4;
-		midpoint.y = startp.y + sqrt(3.0) / 4 * sidel;
-		tri(midpoint, sidel / 2, iter - 1);
-
+int drawTriangle(Point vertex, float length, int nesting) {
+	if (nesting == 0) {
+		return 0;
 	}
+
+	float	lengthHalf = length / 2,
+			lengthQuater = lengthHalf / 2,
+			k;
+
+	Point left, right, middle, newPoint1, newPoint2;
+	left.x = vertex.x - lengthHalf;
+	right.x = vertex.x + lengthHalf;
+	left.y = vertex.y + sqrt(3.0) / 2 * length;
+	right.y = left.y;
+
+	helper->drawLine(vertex.x, vertex.y, left.x, left.y, helper->getBlackColor());
+	helper->drawLine(vertex.x, vertex.y, right.x, right.y, helper->getBlackColor());
+	helper->drawLine(right.x, right.y, left.x, left.y, helper->getBlackColor());
+
+	newPoint1.x = left.x;
+	newPoint1.y = left.y;
+	newPoint2.x = right.x;
+	newPoint2.y = newPoint1.y;
+
+	for (int i = left.y, k = 0; i > vertex.y; i--, k++)
+	{
+		newPoint1.y = i;
+		newPoint2.y = newPoint1.y;
+		newPoint1.x = left.x + k / 1.74;
+		newPoint2.x = right.x - k / 1.74;
+		helper->drawLine(newPoint1.x, newPoint1.y, newPoint2.x, newPoint2.y, helper->getBlackColor());
+	}
+
+	newPoint1.x = vertex.x - lengthQuater;
+	newPoint1.y = vertex.y + sqrt(3.0) / 4 * length;
+	newPoint2.x = vertex.x + lengthQuater;
+	newPoint2.y = newPoint1.y;
+
+	for (int i = newPoint1.y, k = 0; i < left.y; i++, k++)
+	{
+		newPoint1.y = i;
+		newPoint2.y = newPoint1.y;
+		newPoint1.x = vertex.x - lengthQuater + k / 1.74;
+		newPoint2.x = vertex.x + lengthQuater - k / 1.74;
+		helper->drawLine(newPoint1.x, newPoint1.y, newPoint2.x, newPoint2.y, helper->getWhiteColor());
+	}
+		
+	nesting--;
+
+	middle = vertex;
+	drawTriangle(middle, lengthHalf, nesting);
+
+	middle.x = vertex.x - lengthQuater;
+	middle.y = vertex.y + sqrt(3.0) / 4 * length;
+	drawTriangle(middle, lengthHalf, nesting);
+
+	middle.x = vertex.x + lengthQuater;
+	middle.y = vertex.y + sqrt(3.0) / 4 * length;
+	drawTriangle(middle, lengthHalf, nesting);
+
 	return 1;
-}
-
-void drawLine(point p1, point p2)
-{
-	int deltaX = abs(p2.x - p1.x);
-	int deltaY = abs(p2.y - p1.y);
-	int signX = p1.x < p2.x ? 1 : -1;
-	int signY = p1.y < p2.y ? 1 : -1;
-	int error = deltaX - deltaY;
-
-	for (;;)
-	{
-		SetPixel(mydc, p1.x, p1.y, RGB(0, 0, 0));
-
-		if (p1.x == p2.x && p1.y == p2.y)
-			break;
-
-		int error2 = error * 2;
-
-		if (error2 > -deltaY)
-		{
-			error -= deltaY;
-			p1.x += signX;
-		}
-
-		if (error2 < deltaX)
-		{
-			error += deltaX;
-			p1.y += signY;
-		}
-	}
-}
-void eraseLine(point p1, point p2)
-{
-	int deltaX = abs(p2.x - p1.x);
-	int deltaY = abs(p2.y - p1.y);
-	int signX = p1.x < p2.x ? 1 : -1;
-	int signY = p1.y < p2.y ? 1 : -1;
-	int error = deltaX - deltaY;
-
-	for (;;)
-	{
-		SetPixel(mydc, p1.x, p1.y, RGB(255, 255, 255));
-
-		if (p1.x == p2.x && p1.y == p2.y)
-			break;
-
-		int error2 = error * 2;
-
-		if (error2 > -deltaY)
-		{
-			error -= deltaY;
-			p1.x += signX;
-		}
-
-		if (error2 < deltaX)
-		{
-			error += deltaX;
-			p1.y += signY;
-		}
-	}
 }
