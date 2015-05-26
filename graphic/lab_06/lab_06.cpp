@@ -1,117 +1,113 @@
 #include "stdafx.h"
+#include "DrawHelper.h"
 
-HWND myconsole = GetConsoleWindow();
-HDC mydc = GetDC(myconsole);
+DrawHelper * helper = new DrawHelper();
+Point center, point1, point2, point3;
+int iterations, R;
 
-int globit = 6;
+void inputData()
+{
+	/* 320 500 600 5 */
+	cout << "Enter center (x; y): "
+		<< endl
+		<< "x= ";
+	cin >> center.x;
+	cout << "y= ";
+	cin >> center.y;
+
+	cout << endl
+		<< "Enter radius: ";
+	cin >> R;
+
+	cout << endl
+		<< "Enter iterations number: ";
+	cin >> iterations;
+}
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system("color  f0");
-	point center, t1, t2, t3;
-	center.x = 320; center.y = 500;
-	int R = 600;
-	int iter = 5;
+	helper->setTerminalColor();
+	inputData();
 
-	while (!_kbhit()) {
-		t1.x = center.x; t1.y = center.y + R / 4;
-		t2.x = center.x + sqrt(3.0) / 4 * R; t2.y = center.y - R / 2;
-		t3.x = center.x - sqrt(3.0) / 4 * R; t3.y = center.y - R / 2;
+	helper->pause();
+	helper->clearScreen();
 
-		cochLine(t1, t2, iter);
-		cochLine(t2, t3, iter);
-		cochLine(t3, t1, iter);
+	while (helper->wait())  {
+		point1.x = center.x;
+		point1.y = center.y + R / 4;
+
+		point2.x = center.x + sqrt(3.0) / 4 * R;
+		point2.y = center.y - R / 2;
+
+		point3.x = center.x - sqrt(3.0) / 4 * R;
+		point3.y = center.y - R / 2;
+	
+		cochLine(point1, point2, iterations);
+		cochLine(point2, point3, iterations);
+		cochLine(point3, point1, iterations);
 	}
-	cin.ignore();
-	cin.ignore();
 
+	helper->clearScreen();
+	helper->pause();
 	return 0;
 }
 
-int cochLine(point p1, point p2, int iter) {
-	drawLine(p1, p2);
-	point p_t1, p_t2, p_t3;
-	p_t1.x = (2.0 * p1.x + p2.x) / 3.0;
-	p_t1.y = (2.0 * p1.y + p2.y) / 3.0;
-	p_t2.x = (2.0 * p2.x + p1.x) / 3.0;
-	p_t2.y = (2.0 * p2.y + p1.y) / 3.0;
-	if (iter > 0) {
-		eraseLine(p1, p2);
-		drawLine(p1, p_t1);
-		drawLine(p2, p_t2);
+int cochLine(Point startPoint1, Point startPoint2, int iteration) {
 
-		p_t3.x = (p_t1.x + p_t2.x + (p_t1.y - p_t2.y)*sqrt(3.0)) / 2;
-		p_t3.y = (p_t1.y + p_t2.y + (p_t2.x - p_t1.x)*sqrt(3.0)) / 2;
-
-
-		cochLine(p1, p_t1, iter - 1);
-		cochLine(p_t2, p2, iter - 1);
-		cochLine(p_t1, p_t3, iter - 1);
-		cochLine(p_t3, p_t2, iter - 1);
-		return 0;
-	}
-	else
+	helper->drawLine(
+		startPoint1.x, 
+		startPoint1.y, 
+		startPoint2.x, 
+		startPoint2.y, 
+		helper->getBlackColor()
+	);
+	
+	if (iteration <= 0) {
 		return 1;
-}
-
-void drawLine(point p1, point p2)
-{
-	int deltaX = abs(p2.x - p1.x);
-	int deltaY = abs(p2.y - p1.y);
-	int signX = p1.x < p2.x ? 1 : -1;
-	int signY = p1.y < p2.y ? 1 : -1;
-	int error = deltaX - deltaY;
-
-	for (;;)
-	{
-		SetPixel(mydc, p1.x, p1.y, RGB(0, 0, 0));
-
-		if (p1.x == p2.x && p1.y == p2.y)
-			break;
-
-		int error2 = error * 2;
-
-		if (error2 > -deltaY)
-		{
-			error -= deltaY;
-			p1.x += signX;
-		}
-
-		if (error2 < deltaX)
-		{
-			error += deltaX;
-			p1.y += signY;
-		}
 	}
-}
 
-void eraseLine(point p1, point p2)
-{
-	int deltaX = abs(p2.x - p1.x);
-	int deltaY = abs(p2.y - p1.y);
-	int signX = p1.x < p2.x ? 1 : -1;
-	int signY = p1.y < p2.y ? 1 : -1;
-	int error = deltaX - deltaY;
+	Point newPoint1, newPoint2, newPoint3;
 
-	for (;;)
-	{
-		SetPixel(mydc, p1.x, p1.y, RGB(255, 255, 255));
+	newPoint1.x = (2.0 * startPoint1.x + startPoint2.x) / 3.0;
+	newPoint1.y = (2.0 * startPoint1.y + startPoint2.y) / 3.0;
+	newPoint2.x = (2.0 * startPoint2.x + startPoint1.x) / 3.0;
+	newPoint2.y = (2.0 * startPoint2.y + startPoint1.y) / 3.0;
+	newPoint3.x = (newPoint1.x + newPoint2.x + (newPoint1.y - newPoint2.y)*sqrt(3.0)) / 2;
+	newPoint3.y = (newPoint1.y + newPoint2.y + (newPoint2.x - newPoint1.x)*sqrt(3.0)) / 2;
 
-		if (p1.x == p2.x && p1.y == p2.y)
-			break;
+	helper->drawLine(
+		startPoint1.x, 
+		startPoint1.y, 
+		startPoint2.x, 
+		startPoint2.y, 
+		helper->getWhiteColor()
+	);
 
-		int error2 = error * 2;
+	helper->drawLine(
+		startPoint1.x, 
+		startPoint1.y, 
+		newPoint1.x,
+		newPoint1.y, 
+		helper->getBlackColor()
+	);
 
-		if (error2 > -deltaY)
-		{
-			error -= deltaY;
-			p1.x += signX;
-		}
+	helper->drawLine(
+		startPoint2.x, 
+		startPoint2.y, 
+		newPoint2.x, 
+		newPoint2.y, 
+		helper->getWhiteColor()
+	);
 
-		if (error2 < deltaX)
-		{
-			error += deltaX;
-			p1.y += signY;
-		}
-	}
+	iteration--;
+
+	if (iteration >= 0) {
+		cochLine(startPoint1, newPoint1, iteration);
+		cochLine(newPoint2, startPoint2, iteration);
+		cochLine(newPoint1, newPoint3, iteration);
+		cochLine(newPoint3, newPoint2, iteration);
+	} 
+
+	return 0;
 }
