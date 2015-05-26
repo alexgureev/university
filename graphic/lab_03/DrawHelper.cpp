@@ -55,10 +55,25 @@ void DrawHelper::drawCircle(int x, int y, int r)
 
 	while (yCounter >= 0)
 	{
-		this->drawPixel(x + xCounter, y + yCounter, this->getRedColor());
-		this->drawPixel(x - xCounter, y + yCounter, this->getRedColor());
-		this->drawPixel(x + xCounter, y - yCounter, this->getRedColor());
-		this->drawPixel(x - xCounter, y - yCounter, this->getRedColor());
+		this->drawPixel(
+		    x + xCounter,
+		    y + yCounter,
+		    this->getRedColor());
+
+		this->drawPixel(
+		    x - xCounter,
+		    y + yCounter,
+		    this->getRedColor());
+
+		this->drawPixel(
+		    x + xCounter,
+		    y - yCounter,
+		    this->getRedColor());
+
+		this->drawPixel(
+		    x - xCounter,
+		    y - yCounter,
+		    this->getRedColor());
 
 		error = 2 * (delta + yCounter) - 1;
 		if (delta < 0 && error <= 0) {

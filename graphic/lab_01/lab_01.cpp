@@ -1,6 +1,4 @@
 #include "stdafx.h"
-
-
 #include "DrawHelper.h"
 
 DrawHelper * helper = new DrawHelper();
@@ -57,78 +55,60 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	helper->drawRectangle(&rectangle);
 	helper->drawLine(A.x, A.y, B.x, B.y, helper->getGreenColor());
-	result = cohen_sutherland(&rectangle, &A, &B);
+	result = CohenSutherland(&rectangle, &A, &B);
 	if (result != -1)
 	{
 		helper->drawLine(A.x, A.y, B.x, B.y, helper->getBlackColor());
 	}
 		
-	_getch();
-
 	helper->clearScreen();
 	helper->pause();
 	return 0;
 }
 
-
-/* Если отрезок ab не пересекает прямоугольник r, функция возвращает -1;
-если отрезок ab пересекает прямоугольник r, функция возвращает 0 и отсекает
-те части отрезка, которые находятся вне прямоугольника */
-int cohen_sutherland(const struct Square *r, struct Point *a, struct Point *b)
+int CohenSutherland(const struct Square *r, struct Point *a, struct Point *b)
 {
-	int code_a, code_b, code; /* код концов отрезка */
-	struct Point *c; /* одна из точек */
+	int codeA, codeB, code;
+	struct Point *c;
 
-	code_a = vcode(r, a);
-	code_b = vcode(r, b);
+	codeA = vcode(r, a);
+	codeB = vcode(r, b);
 
-	/* пока одна из точек отрезка вне прямоугольника */
-	while (code_a | code_b) {
-		/* если обе точки с одной стороны прямоугольника, то отрезок не пересекает прямоугольник */
-		if (code_a & code_b)
+	while (codeA | codeB) {
+		if (codeA & codeB)
 			return -1;
 
-		/* выбираем точку c с ненулевым кодом */
-		if (code_a) {
-			code = code_a;
+		if (codeA) {
+			code = codeA;
 			c = a;
-		}
-		else {
-			code = code_b;
+		} else {
+			code = codeB;
 			c = b;
 		}
 
-		/* если c левее r, то передвигаем c на прямую x = r->xLeftTop
-		если c правее r, то передвигаем c на прямую x = r->xRightBottom */
 		if (code & LEFT) {
 			c->y += (a->y - b->y) * (r->xLeftTop - c->x) / (a->x - b->x);
 			c->x = r->xLeftTop;
-		}
-		else if (code & RIGHT) {
+		} else if (code & RIGHT) {
 			c->y += (a->y - b->y) * (r->xRightBottom - c->x) / (a->x - b->x);
 			c->x = r->xRightBottom;
-		}/* если c ниже r, то передвигаем c на прямую y = r->yLeftTop
-		 если c выше r, то передвигаем c на прямую y = r->yRightBottom */
-		else if (code & TOP) {
+		} else if (code & TOP) {
 			c->x += (a->x - b->x) * (r->yLeftTop - c->y) / (a->y - b->y);
 			c->y = r->yLeftTop;
-		}
-		else if (code & BOT) {
+		} else if (code & BOT) {
 			c->x += (a->x - b->x) * (r->yRightBottom - c->y) / (a->y - b->y);
 			c->y = r->yRightBottom;
 		}
 
-		/* обновляем код */
-		if (code == code_a) {
+		if (code == codeA) {
 			a = c;
-			code_a = vcode(r, a);
-		}
-		else {
+			codeA = vcode(r, a);
+		} else {
 			b = c;
-			code_b = vcode(r, b);
+			codeB = vcode(r, b);
 		}
 	}
-	/* оба кода равны 0, следовательно обе точки в прямоугольнике */
+
 	return 0;
 }
 

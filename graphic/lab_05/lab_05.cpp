@@ -52,16 +52,19 @@ int _tmain(int argc, _TCHAR* argv[])
 				x = newx;
 				y = newy;
 			}
-		}  
+		}
 
 		if ((x >= -5.0) && (x <= 5.0) && (y >= 0.0) && (y <= 10.0))
 		{
-			helper->drawPixel(200 + x * 32, 370 - y * 35, helper->getRedColor());
+			helper->drawPixel(
+			    200 + x * 32,
+			    370 - y * 35,
+			    helper->getRedColor()
+            );
 		}
 	}
 
-	if (_getch() == 0)
-		_getch();
+	_getch();
 }
 
 

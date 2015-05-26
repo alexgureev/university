@@ -37,4 +37,4 @@ struct Square
 	int yRightBottom;
 };
 
-int cohen_sutherland(const struct Square *r, struct Point *a, struct Point *b);
+int CohenSutherland(const struct Square *r, struct Point *a, struct Point *b);

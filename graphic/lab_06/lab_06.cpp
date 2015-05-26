@@ -7,7 +7,9 @@ int iterations, R;
 
 void inputData()
 {
-	/* 320 500 600 5 */
+	/* 320 500 600 5 
+        260 300 300 5
+    */
 	cout << "Enter center (x; y): "
 		<< endl
 		<< "x= ";
