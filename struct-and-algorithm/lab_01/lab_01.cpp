@@ -199,6 +199,7 @@ int getVowelsCounter(char * word)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+	system("color f0");
 	createFile();
 	iterateLines();
 	cout << "Result was outputed into file.";
