@@ -90,24 +90,23 @@ void searchElementAndOutput()
 
 void insertElement()
 {
-	MyList * current, * newList, * previous, * next;
+	MyList * current, * newList, * previous;
 	int value;
 
-	current = searchElement();
-	newList = new MyList;
+	current = searchElement(); // находим текущий элемент на данной позиции
+	newList = new MyList; // создаем новый, который будет вставлен в середину списка
 
 	cout << "Please, enter new element value:" << endl;
 	cin >> value;
 
-	previous = current->getPrevious();
-	next = current->getNext();
+	previous = current->getPrevious(); // берем  указатель на предыдущий эелмент из текущего
 
-	newList->setNext(next);
-	newList->setPrevious(previous);
+	newList->setPrevious(previous); // ставим указатель на предыдущий элемент для нового
+	newList->setNext(current); // ставим текущий элемент как следующий для нового
 	newList->setValue(value);
 
-	previous->setNext(newList);
-	next->setPrevious(newList);
+	current->setPrevious(newList); // ставим текущему элементу  предыдущим новый элемент
+	previous->setNext(newList); // ставим предыдущему следующим элементом новый
 
 }
 
@@ -139,6 +138,7 @@ void outputList()
 	outputElementsRecursevly(head);
 	cout << " ]" << endl << endl;
 }
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
