@@ -110,15 +110,14 @@ void insertElement()
 
 }
 
-
-void outputElementsRecursevly(MyList * output)
+void outputElementsRecursevly(MyList * output, int position = 1)
 {
 	if (output == NULL)
 	{
 		return;
 	}
 
-	cout << output->getValue();
+	cout << position << ": " << output->getValue();
 
 	if (output->getNext() == NULL)
 	{
@@ -127,7 +126,8 @@ void outputElementsRecursevly(MyList * output)
 	else 
 	{
 		cout << ", ";
-		outputElementsRecursevly(output->getNext());
+		position++;
+		outputElementsRecursevly(output->getNext(), position);
 	}
 
 }
@@ -137,6 +137,44 @@ void outputList()
 	cout << "Current list: [ ";
 	outputElementsRecursevly(head);
 	cout << " ]" << endl << endl;
+}
+
+void deleteElementByPosition(int position)
+{
+	MyList *  current, * previous, * next;
+	current = searchByPosition(head, position);
+
+	previous = current->getPrevious();
+	next = current->getNext();
+
+	if (next != NULL)
+	{
+		next->setPrevious(previous);
+	}
+	
+	if (previous != NULL)
+	{
+		previous->setNext(next);
+	}
+
+	if (previous == NULL)
+	{
+		head = next;
+	}
+	
+}
+
+void deleteElement()
+{
+	
+	int position;
+
+	outputList();
+
+	cout << "Please, enter element position (start from 1):" << endl;
+	cin >> position;
+
+	deleteElementByPosition(position);
 }
 
 
@@ -153,6 +191,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout << "3. Put element to the end of list" << endl;
 		cout << "4. Search element from the head" << endl;
 		cout << "5. Insert element into list" << endl;
+		cout << "6. Delete element from list" << endl;
+
 		cout << "9. Exit" << endl;
 		cout << endl;
 
@@ -172,6 +212,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			case 3: { pushToEnd();  break; }
 			case 4: { searchElementAndOutput(); break; }
 			case 5: { insertElement(); break; }
+			case 6: { deleteElement(); break; }
 			case 9: { flag = 1; break; }
 
 			default: break;
