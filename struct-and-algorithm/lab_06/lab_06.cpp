@@ -112,20 +112,20 @@ void insertElement()
 
 void outputElementsRecursevly(MyList * output, int position = 1)
 {
-	if (output == NULL)
+	if (output == NULL) // если список пустой
 	{
 		return;
 	}
 
 	cout << position << ": " << output->getValue();
 
-	if (output->getNext() == NULL)
+	if (output->getNext() == NULL) // если элемент последний
 	{
 		return;
 	}
 	else 
 	{
-		cout << ", ";
+		cout << ", "; // елемент не последний, идем вглубь
 		position++;
 		outputElementsRecursevly(output->getNext(), position);
 	}
@@ -144,22 +144,22 @@ void deleteElementByPosition(int position)
 	MyList *  current, * previous, * next;
 	current = searchByPosition(head, position);
 
-	previous = current->getPrevious();
+	previous = current->getPrevious(); // берем указатели из элемента который удаляется
 	next = current->getNext();
 
-	if (next != NULL)
+	if (next != NULL) // если элемент не последний, то 
 	{
-		next->setPrevious(previous);
+		next->setPrevious(previous); // меняем указатель на новый предыдущий элемент
 	}
 	
-	if (previous != NULL)
+	if (previous != NULL) // если элемент не первый, то 
 	{
-		previous->setNext(next);
+		previous->setNext(next); // меняем указатель на новый следующий элемент
 	}
 
-	if (previous == NULL)
+	if (previous == NULL) // если удалили вершину списка, то
 	{
-		head = next;
+		head = next; // заменяем вершину на следующий элемент
 	}
 	
 }
