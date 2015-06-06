@@ -4,6 +4,58 @@
 Node * root;
 FILE * fp;
 
+void findLeafToPush(Node ** node, char * line)
+{
+	Node * leaf = new Node;
+
+	if ((*node)->getValue() < *line)
+	{
+		// push to right
+		if ((*node)->getRight() == NULL)
+		{
+			leaf->setValue(line);
+			(*node)->setRight(leaf);
+		}
+		else 
+		{
+			leaf = (*node)->getRight();
+			findLeafToPush(&leaf, line);
+		}
+	}
+	else
+	{
+		// push to left
+		if ((*node)->getLeft() == NULL)
+		{
+			leaf->setValue(line);
+			(*node)->setLeft(leaf);
+		}
+		else
+		{
+			leaf = (*node)->getLeft();
+			findLeafToPush(&leaf, line);
+		}
+	}
+}
+
+void createRootWithValue(char * line)
+{
+	root = new Node;
+	root->setValue(line);
+}
+
+void pushValueIntoThree(char * line)
+{
+	if (root == NULL) 
+	{
+		createRootWithValue(line);
+	}
+	else
+	{
+		findLeafToPush(&root, line);
+	}
+}
+
 void createThreeFromFile()
 {
 	char line[100];
@@ -16,16 +68,18 @@ void createThreeFromFile()
 		return;
 	}
 
-	fread(line, 100, 1, fp);
+	fgets(line, 100, fp);
 
 	system("cls");
-	cout << "Cities list:" << endl << endl;
+	cout << "Words list:" << endl << endl;
 
 	while (!(feof(fp)))
 	{
-		cout << line << endl;
+		cout << line;
 
-		fread(line, 100, 1, fp);
+		pushValueIntoThree(line);
+
+		fgets(line, 100, fp);
 		i++;
 	}
 

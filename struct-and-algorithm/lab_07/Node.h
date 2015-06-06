@@ -3,16 +3,16 @@
 class Node
 {
 private:
-	Node * next;
-	Node * previous;
-	int value;
+	Node * left;
+	Node * right;
+	char value;
 public:
 	Node();
-	void setNext(Node *list);
-	Node *getNext();
-	void setPrevious(Node *list);
-	Node *getPrevious();
-	void setValue(int value);
-	int getValue();
+	void setLeft(Node *node);
+	Node *getLeft();
+	void setRight(Node *node);
+	Node *getRight();
+	void setValue(char * value);
+	char getValue();
 	~Node();
 };

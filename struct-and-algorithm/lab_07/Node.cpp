@@ -9,32 +9,32 @@ Node::~Node()
 {
 }
 
-void Node::setNext(Node *list)
+void Node::setLeft(Node *node)
 {
-	this->next = list;
+	this->left = node;
 }
 
-Node *Node::getNext()
+Node *Node::getLeft()
 {
-	return this->next;
+	return this->left;
 }
 
-void Node::setPrevious(Node *list)
+void Node::setRight(Node *node)
 {
-	this->previous = list;
+	this->right = node;
 }
 
-Node *Node::getPrevious()
+Node *Node::getRight()
 {
-	return this->previous;
+	return this->right;
 }
 
-void Node::setValue(int value)
+void Node::setValue(char *value)
 {
-	this->value = value;
+	this->value = (*value);
 }
 
-int Node::getValue()
+char Node::getValue()
 {
 	return this->value;
 }
