@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <windows.h>
-#include <stdio.h>
 #include <conio.h>
+#include <iostream>
 
 using namespace std;
