@@ -1,122 +1,126 @@
 #include "stdafx.h"
 
-void createEdgeList(FILE * f);
-void Kruskal();
-void DFS(int apex, int * components, int nComponents, int length);
-void outputMST(int weightOfMST, int length);
+void readFromFile(FILE * f);
+void calculateGraph();
+void findConnections(int apex, int * components, int size, int counter);
+void outputToFile();
 int compare(const void *a, const void *b);
 
-int nApex,
-nEdge;
+int apexs,
+edges,
+counter,
+totalDistance;
 
 struct Edge {
-	int begin, 
-		end, 
-		weigth;
-} * edge, 
-  * MST;
+	int start;
+	int end;
+	int distance;
+};
+
+Edge * edge, * result;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	char key, filename[20];
-	do
+	system("cls");
+
+	FILE * f = fopen("input.txt", "r");
+
+	if (f != 0)
 	{
-		system("cls");
+		readFromFile(f);
+		calculateGraph();
+		outputToFile();
+	}
+	else
+	{
+		cout << "File not found" << endl;
+	}
 
-		FILE * f = fopen("input.txt", "r");
-
-		if (f != 0)
-		{
-			createEdgeList(f);
-			Kruskal();
-		}
-		else
-		{
-			cout << "File not found" << endl;
-		}
-
-		cout << "Repeat program y/n?" << endl;
-		cin >> key;
-
-	} while (key != 'n');
+	system("pause");
 }
 
-void createEdgeList(FILE * f)
+void readFromFile(FILE * f)
 {
-	fscanf(f, "%d %d", &nApex, &nEdge);
-	edge = new Edge[nEdge];
-	for (int i = 0; i < nEdge; i++)
+	fscanf(f, "%d %d", &apexs, &edges);
+	edge = new Edge[edges];
+	for (int i = 0; i < edges; i++)
 	{
-		fscanf(f, "%d %d %d", &edge[i].begin, &edge[i].end, &edge[i].weigth);
+		fscanf(f, "%d %d %d", &edge[i].start, &edge[i].end, &edge[i].distance);
 	}
 }
 
 int compare(const void *a, const void *b)
 {
-	return ((Edge*)a)->weigth - ((Edge*)b)->weigth;
+	return ((Edge*)a)->distance - ((Edge*)b)->distance;
 }
 
-void Kruskal()
+void calculateGraph()
 {
-	MST = new Edge[nApex - 1];
-	qsort(edge, nEdge, sizeof(Edge), compare);
+	counter = 0;
+	totalDistance = 0;
 
-	int * components = new int[nApex],
-		length = 0,
-		weightOfMST = 0;
+	result = new Edge[apexs - 1];
+	qsort(edge, edges, sizeof(Edge), compare);
 
-	for (int i = 0; i < nEdge; i++)
+	int * components = new int[apexs];
+
+	for (int i = 0; i < edges; i++)
 	{
-		for (int j = 0; j < nApex; j++)
+		for (int j = 0; j < apexs; j++)
 		{
 			components[j] = -1;
 		}
 
-		DFS(edge[i].begin - 1, components, 1, length);
+		findConnections(edge[i].start - 1, components, 1, counter);
 
-		if (components[edge[i].begin - 1] != components[edge[i].end - 1])
+		if (components[edge[i].start - 1] != components[edge[i].end - 1])
 		{
-			MST[length] = edge[i];
-			length++;
-			weightOfMST += edge[i].weigth;
+			result[counter] = edge[i];
+			totalDistance += edge[i].distance;
+			counter++;
 		}
 
-		if (length == nApex - 1)
+		if (counter == apexs - 1)
 		{
 			break;
 		}
 	}
 
-	outputMST(weightOfMST, length);
+	
 }
 
-void DFS(int apex, int * components, int nComponents, int length)
+void findConnections(int apex, int * components, int size, int counter)
 {
-	components[apex] = nComponents;
+	components[apex] = size;
 
-	for (int i = 0; i < length; i++)
+	for (int i = 0; i < counter; i++)
 	{
-		if ((components[MST[i].begin - 1] == -1) && (MST[i].end - 1 == apex))
+		if ((components[result[i].start - 1] == -1) && (result[i].end - 1 == apex))
 		{
-			DFS(MST[i].begin - 1, components, nComponents, length);
+			findConnections(result[i].start - 1, components, size, counter);
 		}
 
-		if ((components[MST[i].end- 1] == -1) && (MST[i].begin- 1 == apex))
+		if ((components[result[i].end - 1] == -1) && (result[i].start- 1 == apex))
 		{
-			DFS(MST[i].end - 1, components, nComponents, length);
+			findConnections(result[i].end - 1, components, size, counter);
 		}
 
 	}
 }
 
-void outputMST(int weightOfMST, int length)
+void outputToFile()
 {
-	cout << "\nMinimal spinning-tree: " << endl << endl;
+	FILE * f = fopen("output.txt", "w");
 
-	for (int i = 0; i < length; i++)
+	for (int i = 0; i < counter; i++)
 	{
-		cout << MST[i].begin << " " << MST[i].end << endl;
+		fprintf(f, "%d %d", result[i].start, result[i].end);
+		fputc('\n', f);
 	}
 
-	cout << "\nWeigth" << weightOfMST << endl;
+	fprintf(f, "%d", totalDistance);
+
+	fclose(f);
+	
+	cout << "Result was outputed into file" << endl;
 }
