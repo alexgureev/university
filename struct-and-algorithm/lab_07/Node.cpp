@@ -29,9 +29,9 @@ Node *Node::getRight()
 	return this->right;
 }
 
-void Node::setValue(char *value)
+void Node::setValue(char * value)
 {
-	this->value = (*value);
+	this->value = *value;
 }
 
 char Node::getValue()
